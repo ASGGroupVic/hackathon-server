@@ -11,3 +11,4 @@ CREATE (:Consultant {firstName:"Tom", lastName:"Stianos", phone:"0400911911", em
 // create some clients
 CREATE (:Client {name:"Telstra", contact:"Matthias Hansen"})
 CREATE (:Client {name:"Australia Post", contact:"Ayten Ozenc"})
+
