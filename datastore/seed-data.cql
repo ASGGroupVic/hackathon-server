@@ -11,8 +11,8 @@ CREATE (:Consultant {firstName:"And", lastName:"Hit", phone:"0400444555", email:
 CREATE (:Consultant {firstName:"Tom", lastName:"Sti", phone:"0400555666", email:"tom.sti@smsmt.com", employeeId:"2404"});
 
 // create some clients
-CREATE (:Client {name:"Telstra", contact:"TelstraContact"});
-CREATE (:Client {name:"Australia Post", contact:"APContact"});
+CREATE (:Client {name:"Telstra", contact:"TelstraContact", clientCode:"123"});
+CREATE (:Client {name:"Australia Post", contact:"APContact", clientCode:"456"});
 
 // create some moods
 CREATE (:Mood {name:"bored", description:"this place is doing nothing for me - think i might go surf SEEK"});
