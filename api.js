@@ -17,7 +17,7 @@ restify.CORS.ALLOW_HEADERS.push('origin');
 restify.CORS.ALLOW_HEADERS.push('withcredentials');
 restify.CORS.ALLOW_HEADERS.push('x-requested-with');
 server.use(restify.CORS());
-    
+
 server.use(restify.bodyParser());
 server.get('/v1/ping/', ping.getPing);
 
