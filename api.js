@@ -27,6 +27,8 @@ server.post('/v1/consultant/:email/mood', consultantSvc.postMood);
 
 server.get('/v1/client/:code/mood', clientSvc.getMood);
 
+server.get('/v1/client/:code', clientSvc.getClient);
+
 server.listen(8080, function () {
   console.log('%s listening at %s', server.name, server.url);
 });
