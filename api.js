@@ -5,7 +5,15 @@ var clientSvc = require('./clientSvc.js');
 var ping = require('./ping.js');
 
 var server = restify.createServer();
-
+//setup cors
+restify.CORS.ALLOW_HEADERS.push('accept');
+restify.CORS.ALLOW_HEADERS.push('sid');
+restify.CORS.ALLOW_HEADERS.push('lang');
+restify.CORS.ALLOW_HEADERS.push('origin');
+restify.CORS.ALLOW_HEADERS.push('withcredentials');
+restify.CORS.ALLOW_HEADERS.push('x-requested-with');
+server.use(restify.CORS());
+    
 server.use(restify.bodyParser());
 server.get('/v1/ping/', ping.getPing);
 
