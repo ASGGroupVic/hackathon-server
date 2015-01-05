@@ -38,9 +38,9 @@ function getConsultantFromRepo(email)
 }
 
 var server = restify.createServer();
-server.get('/ping/', getPing);
+server.get('/v1/ping/', getPing);
 
-server.get('/consultant/:email/clients', getClientsOfConsultant);
+server.get('/v1/consultant/:email/clients', getClientsOfConsultant);
 
 server.listen(8080, function() {
     console.log('%s listening at %s', server.name, server.url);
