@@ -24,6 +24,7 @@ server.get('/v1/ping/', ping.getPing);
 server.get('/v1/consultant/:email', consultantSvc.getConsultant);
 server.get('/v1/consultant/:email/clients', consultantSvc.getClientsOfConsultant);
 server.post('/v1/consultant/:email/mood', consultantSvc.postMood);
+server.get('/v1/consultant/:email/mood', consultantSvc.getMoods);
 
 server.get('/v1/client/:code/mood', clientSvc.getMood);
 
