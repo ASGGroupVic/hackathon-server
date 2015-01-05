@@ -68,22 +68,32 @@ function getConsultantFromRepo(email)
 {
   var consultant = {};
   for (var i = consultants.length - 1; i >= 0; i--) {
-    if(consultants[i].email == email)
+    if(consultants[i].email === email)
     {
       consultant = consultants[i];
     }
-  };
+  }
   return consultant;
+}
+
+function postMood(req, res, next)
+{
+  console.log(req.body.mood);
+  res.status(200);
+  res.json({
+    type: true
+  });
 }
 
 var server = restify.createServer();
 
-
-
+server.use(restify.bodyParser());
 server.get('/v1/ping/', getPing);
 
 server.get('/v1/consultant/:email', getConsultant);
 server.get('/v1/consultant/:email/clients', getClientsOfConsultant);
+server.post('/v1/consultant/:email/mood', postMood);
+
 
 
 
