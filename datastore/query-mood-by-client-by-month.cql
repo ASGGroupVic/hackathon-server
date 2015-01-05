@@ -1,0 +1,2 @@
+match (mood: Mood)<--(senti: Sentiment)-[:AT*2]->(month:Month)-->(year: Year), (senti)--(cl:Client{clientCode:'123'})
+return  year.year, month.month,mood.name, count(*) order by year.year, month.month;
