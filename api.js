@@ -25,6 +25,15 @@ function getClientsOfConsultant(req, res, next) {
   next();
 }
 
+function getConsultant(req, res, next) {
+  var email = req.params.email;
+  console.log("Consultant: " + email);
+  var consultant = getConsultantFromRepo(email)
+  
+  res.send(consultant);
+  next();
+}
+
 function getConsultantFromRepo(email)
 {
   var consultant = {};
@@ -40,6 +49,7 @@ function getConsultantFromRepo(email)
 var server = restify.createServer();
 server.get('/v1/ping/', getPing);
 
+server.get('/v1/consultant/:email', getConsultant);
 server.get('/v1/consultant/:email/clients', getClientsOfConsultant);
 
 server.listen(8080, function() {
