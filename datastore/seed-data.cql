@@ -12,3 +12,8 @@ CREATE (:Consultant {firstName:"Tom", lastName:"Stianos", phone:"0400911911", em
 CREATE (:Client {name:"Telstra", contact:"Matthias Hansen"})
 CREATE (:Client {name:"Australia Post", contact:"Ayten Ozenc"})
 
+// create some moods
+CREATE (:mood {name:"bored", description:"this place is doing nothing for me - think i might go surf SEEK"})
+CREATE (:mood {name:"happy", description:"I am enjoying myself right about now"})
+CREATE (:mood {name:"postal", description:"I cant take this sh!t anymore"})
+CREATE (:mood {name:"indifferent", description:"just doing my thang - nothing good to report, nothing bad to report"})
