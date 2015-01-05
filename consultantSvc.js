@@ -1,48 +1,29 @@
 'use strict';
-var consultants = [{
-  name: 'test.consultant',
-  email: 'test.consultant@smsmt.com',
-  clients: [
-    {
-      name: 'TestClient'
-    },
-    {
-      name: 'telstra'
-    }
-  ]
-}, {
-  name: 'david.carroll',
-  email: 'david.carroll@smsmt.com',
-  clients: [
-    {
-      name: 'eNett'
-    },
-    {
-      name: 'grv'
-    }
-  ]
-}, {
-  name: 'anthony.pasquale',
-  email: 'anthony.pasquale@smsmt.com',
-  clients: [
-    {
-      name: 'smsbench'
-    },
-    {
-      name: 'anz'
-    }
-  ]
-}];
 
-function getConsultantFromRepo(email) {
+
+function getConsultantFromRepo(email, callback) {
   var consultant = {};
-  var i = consultants.length - 1;
-  for (i; i >= 0; i--) {
-    if (consultants[i].email === email) {
-      consultant = consultants[i];
-    }
-  }
-  return consultant;
+ 
+  var neo4j = require('neo4j');
+  var db = new neo4j.GraphDatabase('http://hackathondata-env.elasticbeanstalk.com');
+
+  var query = [
+    'MATCH (n:`Consultant` {email:{emailAddress}})',
+    'RETURN n'
+  ].join('\n');
+  
+  var params = {
+    emailAddress: email
+  };
+  
+  db.query(query, params, function (err, results) {
+    if (err) throw err;
+    var consultant = results.map(function (result) {
+      console.log(result["n"]["data"]);
+      return result["n"]["data"];
+    });
+    callback(consultant);
+  });
 }
 
 exports.getClientsOfConsultant = function (req, res, next) {
@@ -54,11 +35,14 @@ exports.getClientsOfConsultant = function (req, res, next) {
 };
 
 exports.getConsultant = function (req, res, next) {
-  var email = req.params.email;
+ var email = req.params.email;
   console.log("Consultant: " + email);
-  var consultant = getConsultantFromRepo(email);
-  res.send(consultant);
-  next();
+  getConsultantFromRepo(email, function(consultant) {
+    console.log("horay" + consultant);
+ 
+    res.send(consultant);
+    next();
+  });
 };
 
 exports.postMood = function (req, res, next) {
