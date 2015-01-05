@@ -12,9 +12,39 @@ var consultants = [{
   clients: [
     {
       name: 'TestClient'
+    },
+    {
+      name: 'telstra'
     }
   ]
-}];
+},
+{
+  name: 'david.carroll',
+  email: 'david.carroll@smsmt.com',
+  clients: [
+    {
+      name: 'eNett'
+    },
+    {
+      name: 'grv'
+    }
+
+  ]
+},
+{
+  name: 'anthony.pasquale',
+  email: 'anthony.pasquale@smsmt.com',
+  clients: [
+    {
+      name: 'smsbench'
+    },
+    {
+      name: 'anz'
+    }
+
+  ]
+}
+];
 
 function getClientsOfConsultant(req, res, next) {
   var email = req.params.email;
@@ -38,11 +68,11 @@ function getConsultantFromRepo(email)
 {
   var consultant = {};
   for (var i = consultants.length - 1; i >= 0; i--) {
-    if(consultants[i].email == email)
+    if(consultants[i].email === email)
     {
       consultant = consultants[i];
     }
-  };
+  }
   return consultant;
 }
 
@@ -63,6 +93,8 @@ server.get('/v1/ping/', getPing);
 server.get('/v1/consultant/:email', getConsultant);
 server.get('/v1/consultant/:email/clients', getClientsOfConsultant);
 server.post('/v1/consultant/:email/mood', postMood);
+
+
 
 
 server.listen(8080, function() {
