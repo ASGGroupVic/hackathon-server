@@ -3,9 +3,6 @@
 
 function getConsultantFromRepo(email, callback) {
   var consultant = {};
- 
-  var neo4j = require('neo4j');
-  var db = new neo4j.GraphDatabase('http://hackathondata-env.elasticbeanstalk.com');
 
   var query = [
     'MATCH (n:`Consultant` {email:{emailAddress}})',

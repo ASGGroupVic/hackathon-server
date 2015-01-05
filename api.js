@@ -5,6 +5,10 @@ var clientSvc = require('./clientSvc.js');
 var ping = require('./ping.js');
 
 var server = restify.createServer();
+
+var neo4j = require('neo4j');
+global.db = new neo4j.GraphDatabase('http://hackathondata-env.elasticbeanstalk.com');
+
 //setup cors
 restify.CORS.ALLOW_HEADERS.push('accept');
 restify.CORS.ALLOW_HEADERS.push('sid');
