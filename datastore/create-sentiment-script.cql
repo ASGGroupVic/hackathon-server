@@ -28,7 +28,7 @@ CREATE (senti)-[:EMOTION]->(mo)
 CREATE (senti)-[:TOWARDS]->(client)
 CREATE (cons)-[:FELT]->(senti);
 
-MATCH (mo:Mood {name: 'happy'}), (cons:Consultant{email: 'amd.hit@smsmt.com'}), (client:Client{clientCode: '123'})
+MATCH (mo:Mood {name: 'happy'}), (cons:Consultant{email: 'and.hit@smsmt.com'}), (client:Client{clientCode: '123'})
 MERGE (day:Day {day: 5})
 MERGE (month:Month {month: 1})
 MERGE (year:Year {year: 2015})
