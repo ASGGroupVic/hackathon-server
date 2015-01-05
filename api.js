@@ -48,7 +48,14 @@ var consultants = [{
 
 function getConsultant(req, res, next) {
     console.log("Consultant: " + req.params.id);
-    res.send(consultants[0]);
+    var consultant = {}
+    for (var i = consultants.length - 1; i >= 0; i--) {
+      if(consultants[i].name == req.params.id)
+      {
+        consultant = consultants[i];
+      }
+    };
+    res.send(consultant);
     next();
 }
 
