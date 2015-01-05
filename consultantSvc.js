@@ -60,3 +60,13 @@ exports.getConsultant = function (req, res, next) {
   res.send(consultant);
   next();
 };
+
+exports.postMood = function (req, res, next) {
+  console.log(req.body.mood);
+  res.status(200);
+  res.json({
+    type: true
+  });
+
+  next();
+};
