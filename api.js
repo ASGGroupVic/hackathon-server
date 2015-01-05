@@ -12,9 +12,39 @@ var consultants = [{
   clients: [
     {
       name: 'TestClient'
+    },
+    {
+      name: 'telstra'
     }
   ]
-}];
+},
+{
+  name: 'david.carroll',
+  email: 'david.carroll@smsmt.com',
+  clients: [
+    {
+      name: 'eNett'
+    },
+    {
+      name: 'grv'
+    }
+
+  ]
+},
+{
+  name: 'anthony.pasquale',
+  email: 'anthony.pasquale@smsmt.com',
+  clients: [
+    {
+      name: 'smsbench'
+    },
+    {
+      name: 'anz'
+    }
+
+  ]
+}
+];
 
 function getConsultant(req, res, next) {
     console.log("Consultant: " + req.params.id);
@@ -23,8 +53,8 @@ function getConsultant(req, res, next) {
 }
 
 var server = restify.createServer();
-server.get('/ping/', getPing);
 
+server.get('/ping/', getPing);
 server.get('/consultant/:id', getConsultant);
 
 server.listen(8080, function() {
