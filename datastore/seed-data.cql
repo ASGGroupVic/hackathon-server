@@ -1,0 +1,6 @@
+CREATE (:Consultant {firstName:"Warwick", lastName:"Slade", phone:"0407433955", email:"warwick.slade@smsmt.com", employeeId:"2401"})
+CREATE (:Consultant {firstName:"Adam", lastName:"Rozencwajg", phone:"0417382311", email:"adam.rozencwajg@smsmt.com", employeeId:"955"})
+CREATE (:Consultant {firstName:"Fadrian", lastName:"Sudaman", phone:"0411371359", email:"fadrian.sudaman@smsmt.com", employeeId:"2402"})
+CREATE (:Consultant {firstName:"Andy", lastName:"Hitchman", phone:"0400999333", email:"andrew.hitchman@smsmt.com", employeeId:"103"})
+CREATE (:Consultant {firstName:"Tom", lastName:"Stianos", phone:"0400911911", email:"tom.stianos@smsmt.com", employeeId:"1"})
+
