@@ -1,6 +1,39 @@
 'use strict';
 
 
+function getConsultantClientsFromRepo(email, callback) {
+  var consultant = {};
+
+  var query = [
+    'MATCH (co:Consultant {email:{emailAddress}})-->(en:Engagement)-->(cl:Client)',
+    'RETURN cl;'
+  ].join('\n');
+  
+  var params = {
+    emailAddress: email
+  };
+  
+  db.query(query, params, function (err, results) {
+    if (err) throw err;
+    var clients = results.map(function (result) {
+      console.log(result["cl"]["data"]);
+      return result["cl"]["data"];
+    });
+    callback(clients);
+  });
+}
+
+exports.getClientsOfConsultant = function (req, res, next) {
+  var email = req.params.email;
+  console.log("Consultant: " + email);
+  var clients = getConsultantClientsFromRepo(email, function(consultant) {
+    res.send(consultant);
+    next();
+  });
+
+};
+
+
 function getConsultantFromRepo(email, callback) {
   var consultant = {};
 
@@ -22,14 +55,6 @@ function getConsultantFromRepo(email, callback) {
     callback(consultant);
   });
 }
-
-exports.getClientsOfConsultant = function (req, res, next) {
-  var email = req.params.email;
-  console.log("Consultant: " + email);
-  var consultant = getConsultantFromRepo(email);
-  res.send(consultant.clients);
-  next();
-};
 
 exports.getConsultant = function (req, res, next) {
  var email = req.params.email;
