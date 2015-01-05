@@ -46,11 +46,24 @@ function getConsultantFromRepo(email)
   return consultant;
 }
 
+function postMood(req, res, next)
+{
+  console.log(req.body.mood);
+  res.status(200);
+  res.json({
+    type: true
+  });
+}
+
 var server = restify.createServer();
+
+server.use(restify.bodyParser());
 server.get('/v1/ping/', getPing);
 
 server.get('/v1/consultant/:email', getConsultant);
 server.get('/v1/consultant/:email/clients', getClientsOfConsultant);
+server.post('/v1/consultant/:email/mood', postMood);
+
 
 server.listen(8080, function() {
     console.log('%s listening at %s', server.name, server.url);
