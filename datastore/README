@@ -1,0 +1,2 @@
+to load into neo4j, run the following on the docker container
+neo4j-shell -file seed-data.cql
