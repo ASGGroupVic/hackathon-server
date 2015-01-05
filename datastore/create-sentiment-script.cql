@@ -3,7 +3,7 @@
 // replace the email with the consultant email and mood name to what was selected
 
 // DATA for JUL 2014
-LOAD CSV WITH HEADERS FROM 'file:///home/hackathon-server/datastore/sentiments.csv' AS line
+LOAD CSV WITH HEADERS FROM 'https://s3-ap-southeast-2.amazonaws.com/hackathon-server/sentiments.csv' AS line
 MATCH (mo:Mood {name: line.mood}), (cons:Consultant{email: line.email}), (client:Client{clientCode: line.clientcode})
 MERGE (day:Day {day: toInt(line.day), month: toInt(line.month), year:toInt(line.year)})
 MERGE (month:Month {month: toInt(line.month), year: toInt(line.year)})
