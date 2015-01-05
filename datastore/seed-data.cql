@@ -26,7 +26,11 @@ CREATE (:Engagement {name:"Cloud Migration", Client:"Australia Post"});
 
 // link the engagements to clients
 MATCH (e:Engagement),(c:Client)
-WHERE e.Client=c.name
+WHERE c.name="Telstra" AND e.name="Contact Centre Optimisiation"
+
+CREATE (e)-[r:with]->(c);
+MATCH (e:Engagement),(c:Client)
+WHERE c.name="Australia Post" AND e.name="Cloud Migration"
 CREATE (e)-[r:with]->(c);
 
 // link the consultants to engagements
