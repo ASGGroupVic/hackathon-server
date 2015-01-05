@@ -4,15 +4,15 @@ OPTIONAL MATCH (n)-[r]-()
 DELETE n,r;
 
 // create some consultants
-CREATE (:Consultant {firstName:"Warwick", lastName:"Slade", phone:"0407433955", email:"warwick.slade@smsmt.com", employeeId:"2401"});
-CREATE (:Consultant {firstName:"Adam", lastName:"Rozencwajg", phone:"0417382311", email:"adam.rozencwajg@smsmt.com", employeeId:"955"});
-CREATE (:Consultant {firstName:"Fadrian", lastName:"Sudaman", phone:"0411371359", email:"fadrian.sudaman@smsmt.com", employeeId:"2402"});
-CREATE (:Consultant {firstName:"Andy", lastName:"Hitchman", phone:"0400999333", email:"andrew.hitchman@smsmt.com", employeeId:"103"});
-CREATE (:Consultant {firstName:"Tom", lastName:"Stianos", phone:"0400911911", email:"tom.stianos@smsmt.com", employeeId:"1"});
+CREATE (:Consultant {firstName:"War", lastName:"Sla", phone:"0407111222", email:"war.sla@smsmt.com", employeeId:"2401"});
+CREATE (:Consultant {firstName:"Ada", lastName:"Roz", phone:"0417222333", email:"ada.roz@smsmt.com", employeeId:"2405"});
+CREATE (:Consultant {firstName:"Fad", lastName:"Sud", phone:"0411333444", email:"fad.sud@smsmt.com", employeeId:"2402"});
+CREATE (:Consultant {firstName:"And", lastName:"Hit", phone:"0400444555", email:"and.hit@smsmt.com", employeeId:"2403"});
+CREATE (:Consultant {firstName:"Tom", lastName:"Sti", phone:"0400555666", email:"tom.sti@smsmt.com", employeeId:"2404"});
 
 // create some clients
-CREATE (:Client {name:"Telstra", contact:"Matthias Hansen"});
-CREATE (:Client {name:"Australia Post", contact:"Ayten Ozenc"});
+CREATE (:Client {name:"Telstra", contact:"TelstraContact"});
+CREATE (:Client {name:"Australia Post", contact:"APContact"});
 
 // create some moods
 CREATE (:Mood {name:"bored", description:"this place is doing nothing for me - think i might go surf SEEK"});
@@ -35,7 +35,7 @@ where c.employeeId = "2401" AND e.name="Contact Centre Optimisiation"
 create (c)-[:engagedOn]->(e);
 
 match (c:Consultant),(e:Engagement)
-where c.employeeId = "955" AND e.name="Contact Centre Optimisiation"
+where c.employeeId = "2405" AND e.name="Contact Centre Optimisiation"
 create (c)-[:engagedOn]->(e);
 
 match (c:Consultant),(e:Engagement)
@@ -43,13 +43,13 @@ where c.employeeId = "2402" AND e.name="Contact Centre Optimisiation"
 create (c)-[:engagedOn]->(e);
 
 match (c:Consultant),(e:Engagement)
-where c.employeeId = "103" AND e.name="Contact Centre Optimisiation"
+where c.employeeId = "2403" AND e.name="Contact Centre Optimisiation"
 create (c)-[:engagedOn]->(e);
 
 match (c:Consultant),(e:Engagement)
-where c.employeeId = "1" AND e.name="Contact Centre Optimisiation"
+where c.employeeId = "2404" AND e.name="Contact Centre Optimisiation"
 create (c)-[:engagedOn]->(e);
 
 match (c:Consultant),(e:Engagement)
-where c.employeeId = "1" AND e.name="Cloud Migration"
+where c.employeeId = "2404" AND e.name="Cloud Migration"
 create (c)-[:engagedOn]->(e);

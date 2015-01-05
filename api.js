@@ -16,23 +16,41 @@ var consultants = [{
   ]
 }];
 
+function getClientsOfConsultant(req, res, next) {
+  var email = req.params.email;
+  console.log("Consultant: " + email);
+  var consultant = getConsultantFromRepo(email)
+  
+  res.send(consultant.clients);
+  next();
+}
+
 function getConsultant(req, res, next) {
-    console.log("Consultant: " + req.params.id);
-    var consultant = {}
-    for (var i = consultants.length - 1; i >= 0; i--) {
-      if(consultants[i].name == req.params.id)
-      {
-        consultant = consultants[i];
-      }
-    };
-    res.send(consultant);
-    next();
+  var email = req.params.email;
+  console.log("Consultant: " + email);
+  var consultant = getConsultantFromRepo(email)
+  
+  res.send(consultant);
+  next();
+}
+
+function getConsultantFromRepo(email)
+{
+  var consultant = {};
+  for (var i = consultants.length - 1; i >= 0; i--) {
+    if(consultants[i].email == email)
+    {
+      consultant = consultants[i];
+    }
+  };
+  return consultant;
 }
 
 var server = restify.createServer();
-server.get('/ping/', getPing);
+server.get('/v1/ping/', getPing);
 
-server.get('/consultant/:id', getConsultant);
+server.get('/v1/consultant/:email', getConsultant);
+server.get('/v1/consultant/:email/clients', getClientsOfConsultant);
 
 server.listen(8080, function() {
     console.log('%s listening at %s', server.name, server.url);
