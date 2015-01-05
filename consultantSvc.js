@@ -57,8 +57,10 @@ function getConsultantFromRepo(email, callback) {
 }
 
 exports.getConsultant = function (req, res, next) {
- var email = req.params.email;
+
+  var email = req.params.email;
   console.log("Consultant: " + email);
+
   getConsultantFromRepo(email, function(consultant) {
     console.log("horay" + consultant);
  
