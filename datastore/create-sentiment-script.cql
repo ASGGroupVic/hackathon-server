@@ -2,7 +2,7 @@
 // create unique date and relationship. Replace the day, month and year value with date parameter values
 // replace the email with the consultant email and mood name to what was selected
 
-MATCH (mo:Mood {name: 'bored'}), (cons:Consultant{email: 'warwick.slade@smsmt.com'})
+MATCH (mo:Mood {name: 'bored'}), (cons:Consultant{email: 'war.sla@smsmt.com'}), (client:Client{clientCode: '123'})
 MERGE (day:Day {day: 5})
 MERGE (month:Month {month: 1})
 MERGE (year:Year {year: 2015})
@@ -12,4 +12,57 @@ MERGE (month)-[:AT]-(year)
 MERGE (year)-[:AT]-(cal)
 CREATE (senti:Sentiment{timeofday:'01:00:00 PM'})-[:AT]->(day)
 CREATE (senti)-[:EMOTION]->(mo)
-CREATE (cons)-[:FELT]->(senti)
+CREATE (senti)-[:TOWARDS]->(client)
+CREATE (cons)-[:FELT]->(senti);
+
+MATCH (mo:Mood {name: 'bored'}), (cons:Consultant{email: 'fad.sud@smsmt.com'}), (client:Client{clientCode: '123'})
+MERGE (day:Day {day: 5})
+MERGE (month:Month {month: 1})
+MERGE (year:Year {year: 2015})
+MERGE (cal:Calendar {name: 'root'})
+MERGE (day)-[:AT]-(month)
+MERGE (month)-[:AT]-(year)
+MERGE (year)-[:AT]-(cal)
+CREATE (senti:Sentiment{timeofday:'01:00:00 PM'})-[:AT]->(day)
+CREATE (senti)-[:EMOTION]->(mo)
+CREATE (senti)-[:TOWARDS]->(client)
+CREATE (cons)-[:FELT]->(senti);
+
+MATCH (mo:Mood {name: 'happy'}), (cons:Consultant{email: 'amd.hit@smsmt.com'}), (client:Client{clientCode: '123'})
+MERGE (day:Day {day: 5})
+MERGE (month:Month {month: 1})
+MERGE (year:Year {year: 2015})
+MERGE (cal:Calendar {name: 'root'})
+MERGE (day)-[:AT]-(month)
+MERGE (month)-[:AT]-(year)
+MERGE (year)-[:AT]-(cal)
+CREATE (senti:Sentiment{timeofday:'01:00:00 PM'})-[:AT]->(day)
+CREATE (senti)-[:EMOTION]->(mo)
+CREATE (senti)-[:TOWARDS]->(client)
+CREATE (cons)-[:FELT]->(senti);
+
+MATCH (mo:Mood {name: 'postal'}), (cons:Consultant{email: 'tom.sti@smsmt.com'}), (client:Client{clientCode: '123'})
+MERGE (day:Day {day: 5})
+MERGE (month:Month {month: 1})
+MERGE (year:Year {year: 2015})
+MERGE (cal:Calendar {name: 'root'})
+MERGE (day)-[:AT]-(month)
+MERGE (month)-[:AT]-(year)
+MERGE (year)-[:AT]-(cal)
+CREATE (senti:Sentiment{timeofday:'01:00:00 PM'})-[:AT]->(day)
+CREATE (senti)-[:EMOTION]->(mo)
+CREATE (senti)-[:TOWARDS]->(client)
+CREATE (cons)-[:FELT]->(senti);
+
+MATCH (mo:Mood {name: 'indifferent'}), (cons:Consultant{email: 'ada.roz@smsmt.com'}), (client:Client{clientCode: '123'})
+MERGE (day:Day {day: 5})
+MERGE (month:Month {month: 1})
+MERGE (year:Year {year: 2015})
+MERGE (cal:Calendar {name: 'root'})
+MERGE (day)-[:AT]-(month)
+MERGE (month)-[:AT]-(year)
+MERGE (year)-[:AT]-(cal)
+CREATE (senti:Sentiment{timeofday:'01:00:00 PM'})-[:AT]->(day)
+CREATE (senti)-[:EMOTION]->(mo)
+CREATE (senti)-[:TOWARDS]->(client)
+CREATE (cons)-[:FELT]->(senti);
