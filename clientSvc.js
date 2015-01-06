@@ -4,7 +4,7 @@
 function getMoodForClient(code, callback) {
   var query = [
     'MATCH (mood:Mood)<--(s: Sentiment)-->(c:Client{clientCode:{cCode}})',
-    'RETURN mood.name, count(*)'
+    'RETURN mood.name, count(*) as count'
   ].join('\n');
 
   var params = {
