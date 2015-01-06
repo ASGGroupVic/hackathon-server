@@ -20,6 +20,7 @@ function getConsultantClientsFromRepo(email, callback) {
       console.log(result.cl.data);
       return result.cl.data;
     });
+
     callback(clients);
   });
 }
@@ -83,6 +84,13 @@ exports.getClientsOfConsultant = function (req, res, next) {
   });
 };
 
+function getConsultantMoodsFromRepo(email, callback) {
+  console.log("Getting moods for " + email);
+  var moods = [
+    'happy', 'sad', 'sad', 'angry', 'indifferent'
+  ];
+  callback(moods);
+}
 
 function getConsultantFromRepo(email, callback) {
   var query = [
@@ -112,6 +120,16 @@ exports.getConsultant = function (req, res, next) {
 
   getConsultantFromRepo(email, function (consultant) {
     res.send(consultant);
+    next();
+  });
+};
+
+exports.getMoods = function (req, res, next) {
+  var email = req.params.email;
+  console.log("Consultant: " + email);
+
+  getConsultantMoodsFromRepo(email, function (moods) {
+    res.send(moods);
     next();
   });
 };

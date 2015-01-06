@@ -38,3 +38,37 @@ exports.getMood = function (req, res, next) {
   });
 };
 
+
+
+
+function getClientFromRepo(clientCode, callback) {
+  var query = [
+    'MATCH (n:`Client` {clientCode:{cCode}})',
+    'RETURN n'
+  ].join('\n');
+
+  var params = {
+    cCode: clientCode
+  };
+
+  db.query(query, params, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var consultant = results.map(function (result) {
+      console.log(result.n.data);
+      return result.n.data;
+    });
+    callback(consultant);
+  });
+}
+
+exports.getClient = function (req, res, next) {
+  var clientCode = req.params.code;
+  console.log("Client: " + clientCode);
+
+  getClientFromRepo(clientCode, function (client) {
+    res.send(client);
+    next();
+  });
+};
