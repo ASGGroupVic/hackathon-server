@@ -36,12 +36,6 @@ exports.getClientsOfConsultant = function (req, res, next) {
 
 
 function createMoodForConsultant(email, mood, clientCode, notes, tags, callback) {
-  //Example Create
-  //'CREATE (:Consultant {firstName:"Dave", lastName:"Carroll", phone:"0400555666", email:"dave.carr@smsmt.com", employeeId:"007"});'
-  // Example Relationship
-  // 'match (c:Consultant),(e:Engagement)',
-  //'where c.employeeId = "007" AND e.name="Contact Centre Optimisiation"',
-  // 'create (c)-[:engagedOn]->(e);'
   var query = [
     'MATCH (cons:Consultant{email: {emailAddress}}), (client:Client{clientCode: {clientCode}})',
     'MERGE (mo:Mood {name: {consultantMood}})',
@@ -73,7 +67,7 @@ function createMoodForConsultant(email, mood, clientCode, notes, tags, callback)
     consultantMood: mood,
     clientCode: clientCode,
     day: now_utc.getDate(),
-    month: now_utc.getMonth()+1,
+    month: now_utc.getMonth() + 1,
     year: now_utc.getFullYear(),
     timeOfDay: now_utc.toLocaleTimeString(),
     observation: notes,
@@ -86,7 +80,7 @@ function createMoodForConsultant(email, mood, clientCode, notes, tags, callback)
     if (err) {
       throw err;
     }
-    var clients = results.map(function (result) {
+    results.map(function (result) {
       console.log(result);
       return result;
     });
@@ -198,7 +192,7 @@ exports.postMood = function (req, res, next) {
   var clientCode = req.body.client;
   var notes = req.body.notes;
   var tags = req.body.tags;
-  createMoodForConsultant(email, mood, clientCode, notes, tags, function() {
+  createMoodForConsultant(email, mood, clientCode, notes, tags, function () {
     res.status(200);
     res.json({
       success: true
