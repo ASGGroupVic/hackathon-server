@@ -2,11 +2,9 @@
 /*global db*/
 
 function getMoodForClient(code, callback) {
-  // NOT THE CORRECT QUERY YET. NEEDS TO CHECK RELATIONS
-  // FOR MOOD. - JP
   var query = [
-    'MATCH (n: `Client` {clientCode:{cCode}})  ',
-    'RETURN n '
+    'MATCH (mood:Mood)<--(s: Sentiment)-->(c:Client{clientCode:{cCode}})',
+    'RETURN mood.name, count(*)'
   ].join('\n');
 
   var params = {
@@ -18,8 +16,8 @@ function getMoodForClient(code, callback) {
       throw err;
     }
     var mood = results.map(function (result) {
-      console.log(result.n.data);
-      return result.n.data;
+      console.log(result);
+      return result;
     });
     callback(mood);
   });
@@ -37,9 +35,6 @@ exports.getMood = function (req, res, next) {
     next();
   });
 };
-
-
-
 
 function getClientFromRepo(clientCode, callback) {
   var query = [
