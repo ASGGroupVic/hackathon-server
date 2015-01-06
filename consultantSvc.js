@@ -120,6 +120,30 @@ function getConsultantMoodsFromRepo(email, callback) {
   });
 }
 
+function getConsultantObservationsFromRepo(email, callback) {
+  var query = [
+    'MATCH (co:`Consultant` {email: {emailAddress}})-->(obs:`Observation`)-->(day:`Day`)-->(month:`Month`)-->(year: `Year`), (obs)--(cl:`Client`{clientCode:"123"})',
+    'OPTIONAL MATCH (obs)-->(tag:`Tag`)',
+    'RETURN obs.timeofday as timeofday, day.day as day, day.month as month, day.year as year, obs.text as observation, cl.name, collect(tag.tag) as tags ORDER BY day.year, day.month, day.day, obs.timeofday;'
+  ].join('\n');
+
+  var params = {
+    emailAddress: email
+  };
+
+  db.query(query, params, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var observations = results.map(function (result) {
+      console.log(result);
+      return result;
+    });
+
+    callback(observations);
+  });
+}
+
 function getConsultantFromRepo(email, callback) {
   var query = [
     'MATCH (n:`Consultant` {email:{emailAddress}})',
@@ -182,6 +206,16 @@ exports.getMoods = function (req, res, next) {
 
   getConsultantMoodsFromRepo(email, function (moods) {
     res.send(moods);
+    next();
+  });
+};
+
+exports.getObservations = function (req, res, next) {
+  var email = req.params.email;
+  console.log("Consultant: " + email);
+
+  getConsultantObservationsFromRepo(email, function (observations) {
+    res.send(observations);
     next();
   });
 };

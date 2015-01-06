@@ -24,6 +24,30 @@ function getMoodForClient(code, callback) {
   });
 }
 
+function getObservationsForClient(clientId, callback) {
+  var query = [
+    'MATCH (co:`Consultant`)-->(obs:`Observation`)-->(day:`Day`)-->(month:`Month`)-->(year: `Year`), (obs)--(cl:`Client`{clientCode:{clientId}})',
+    'OPTIONAL MATCH (obs)-->(tag:`Tag`)',
+    'RETURN obs.timeofday as timeofday, day.day as day, day.month as month, day.year as year, obs.text as observation, co.firstName as firstName, co.lastName as lastName, co.email as email, collect(tag.tag) as tags ORDER BY day.year, day.month, day.day, obs.timeofday;'
+  ].join('\n');
+
+  var params = {
+    clientId: clientId
+  };
+
+  db.query(query, params, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var observations = results.map(function (result) {
+      console.log(result);
+      return result;
+    });
+
+    callback(observations);
+  });
+}
+
 exports.getMood = function (req, res, next) {
 
   var code = req.params.code;
@@ -33,6 +57,16 @@ exports.getMood = function (req, res, next) {
     console.log('Hooray! ' + mood);
 
     res.send(mood);
+    next();
+  });
+};
+
+exports.getObservations = function (req, res, next) {
+  var code = req.params.code;
+  console.log('Client: ' + code);
+
+  getObservationsForClient(code, function (observations) {
+    res.send(observations);
     next();
   });
 };
@@ -108,7 +142,6 @@ function getConsultantforClientsFromRepo(clientCode, callback) {
   var params = {
     cCode: clientCode
   };
-
 
   db.query(query, params, function (err, results) {
     if (err) {
