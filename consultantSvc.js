@@ -50,7 +50,7 @@ function createMoodForConsultant(email, mood, clientCode, callback) {
     'MERGE (day)-[:AT]-(month)',
     'MERGE (month)-[:AT]-(year)',
     'MERGE (year)-[:AT]-(cal)',
-    'CREATE (senti:Sentiment{timeofday:"07:00:00 PM"})-[:AT]->(day)',
+    'CREATE (senti:Sentiment{timeofday:"06:00:00 PM"})-[:AT]->(day)',
     'CREATE (senti)-[:EMOTION]->(mo)',
     'CREATE (senti)-[:TOWARDS]->(client)',
     'CREATE (cons)-[:FELT]->(senti);'
@@ -127,8 +127,8 @@ exports.getConsultant = function (req, res, next) {
 exports.postMood = function (req, res, next) {
 
   var email = req.params.email;
-  var mood = req.body.consultantmood;
-  var clientCode = req.body.clientcode;
+  var mood = req.body.mood;
+  var clientCode = req.body.client;
   createMoodForConsultant(email, mood, clientCode, function() {
     res.status(200);
     res.json({
