@@ -1,5 +1,6 @@
 'use strict';
 /*global db*/
+/*jshint unused:req */
 
 function getMoodForClient(code, callback) {
   var query = [
@@ -87,6 +88,7 @@ function getClientsFromRepo(callback) {
   });
 }
 
+/*jslint unparam: true*/
 exports.getClients = function (req, res, next) {
   console.log("Get Clients");
 
@@ -95,3 +97,38 @@ exports.getClients = function (req, res, next) {
     next();
   });
 };
+/*jslint unparam: false*/
+
+function getConsultantforClientsFromRepo(clientCode, callback) {
+  var query = [
+    'MATCH (co:Consultant)-->(en:Engagement)-->(cl:Client {clientCode:{cCode}})',
+    'RETURN co'
+  ].join('\n');
+
+  var params = {
+    cCode: clientCode
+  };
+
+
+  db.query(query, params, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var consultants = results.map(function (result) {
+      console.log(result.co.data);
+      return result.co.data;
+    });
+    callback(consultants);
+  });
+}
+
+exports.getConsultantsbyClientCode = function (req, res, next) {
+  var code = req.params.code;
+  console.log('Client: ' + code);
+
+  getConsultantforClientsFromRepo(code, function (consultants) {
+    res.send(consultants);
+    next();
+  });
+};
+
