@@ -35,15 +35,10 @@ exports.getClientsOfConsultant = function (req, res, next) {
 };
 
 
-function createMoodForConsultant(email, mood, clientCode, callback) {
-  //Example Create
-  //'CREATE (:Consultant {firstName:"Dave", lastName:"Carroll", phone:"0400555666", email:"dave.carr@smsmt.com", employeeId:"007"});'
-  // Example Relationship
-  // 'match (c:Consultant),(e:Engagement)',
-  //'where c.employeeId = "007" AND e.name="Contact Centre Optimisiation"',
-  // 'create (c)-[:engagedOn]->(e);'
+function createMoodForConsultant(email, mood, clientCode, notes, tags, callback) {
   var query = [
-    'MATCH (mo:Mood {name: {consultantMood}}), (cons:Consultant{email: {emailAddress}}), (client:Client{clientCode: {clientCode}})',
+    'MATCH (cons:Consultant{email: {emailAddress}}), (client:Client{clientCode: {clientCode}})',
+    'MERGE (mo:Mood {name: {consultantMood}})',
     'MERGE (day:Day {day: toInt({day}), month: toInt({month}), year:toInt({year})})',
     'MERGE (month:Month {month: toInt({month}), year: toInt({year})})',
     'MERGE (year:Year {year: toInt({year})})',
@@ -51,22 +46,32 @@ function createMoodForConsultant(email, mood, clientCode, callback) {
     'MERGE (day)-[:AT]-(month)',
     'MERGE (month)-[:AT]-(year)',
     'MERGE (year)-[:AT]-(cal)',
-    'CREATE (senti:Sentiment{timeofday:"06:00:00 PM"})-[:AT]->(day)',
+    'CREATE (senti:Sentiment{timeofday:{timeOfDay}})-[:AT]->(day)',
     'CREATE (senti)-[:EMOTION]->(mo)',
     'CREATE (senti)-[:TOWARDS]->(client)',
-    'CREATE (cons)-[:FELT]->(senti);'
+    'CREATE (cons)-[:FELT]->(senti)',
+    'CREATE (obs:Observation{timeofday: {timeOfDay}, text: {observation}})-[:AT]->(day)',
+    'CREATE (cons)-[:MADE]->(obs)',
+    'CREATE (obs)-[:TOWARDS]->(client)',
+    'FOREACH(t in split({tags}, ",") |',
+    'MERGE (newTag:Tag{tag:t})',
+    'CREATE (obs)-[:TAGGED]->(newTag));'
   ].join('\n');
 
   console.log(query);
 
-  var date = new Date();
+  var now = new Date();
+  var now_utc = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
   var params = {
     emailAddress: email,
     consultantMood: mood,
     clientCode: clientCode,
-    day: date.getDate(),
-    month: date.getMonth()+1,
-    year: date.getFullYear()
+    day: now_utc.getDate(),
+    month: now_utc.getMonth() + 1,
+    year: now_utc.getFullYear(),
+    timeOfDay: now_utc.toLocaleTimeString(),
+    observation: notes,
+    tags: tags
   };
 
   console.log(params);
@@ -75,7 +80,7 @@ function createMoodForConsultant(email, mood, clientCode, callback) {
     if (err) {
       throw err;
     }
-    var clients = results.map(function (result) {
+    results.map(function (result) {
       console.log(result);
       return result;
     });
@@ -94,8 +99,8 @@ exports.getClientsOfConsultant = function (req, res, next) {
 
 function getConsultantMoodsFromRepo(email, callback) {
   var query = [
-    'MATCH (mood: `Mood`)<--(senti: `Sentiment`)<--(cons: `Consultant`{email:{emailAddress}}), (senti)-->(client: `Client`), (senti)-->(day: `Day`)-->(month:`Month`)-->(year: `Year`)',
-    'RETURN mood, senti, cons, client, day, month, year'
+    'MATCH (mood: Mood)<--(senti: Sentiment)-[:AT*2]->(month:Month)-->(year: Year), (senti)--(co:Consultant{email:{emailAddress}})',
+    'RETURN  year.year as year, month.month as month,mood.name as mood, count(*) as count order by year.year, month.month'
   ].join('\n');
 
   var params = {
@@ -108,16 +113,7 @@ function getConsultantMoodsFromRepo(email, callback) {
     }
     var moods = results.map(function (result) {
       console.log(result);
-      var data = {
-        mood: result.mood.data,
-        sentiment: result.senti.data,
-        consultant: result.cons.data,
-        client: result.client.data,
-        day: result.day.data,
-        month: result.month.data,
-        year: result.year.data
-      }
-      return data;
+      return result;
     });
 
     callback(moods);
@@ -146,6 +142,23 @@ function getConsultantFromRepo(email, callback) {
   });
 }
 
+function getConsultantsFromRepo(callback) {
+  var query = [
+    'MATCH (n:`Consultant`)',
+    'RETURN n'
+  ].join('\n');
+
+  db.query(query, null, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var consultant = results.map(function (result) {
+      return result.n.data;
+    });
+    callback(consultant);
+  });
+}
+
 exports.getConsultant = function (req, res, next) {
   var email = req.params.email;
   console.log("Consultant: " + email);
@@ -155,7 +168,14 @@ exports.getConsultant = function (req, res, next) {
     next();
   });
 };
-
+/*jslint unparam: true*/
+exports.getConsultants = function (req, res, next) {
+  getConsultantsFromRepo(function (consultants) {
+    res.send(consultants);
+    next();
+  });
+};
+/*jslint unparam: false*/
 exports.getMoods = function (req, res, next) {
   var email = req.params.email;
   console.log("Consultant: " + email);
@@ -167,16 +187,53 @@ exports.getMoods = function (req, res, next) {
 };
 
 exports.postMood = function (req, res, next) {
-
   var email = req.params.email;
   var mood = req.body.mood;
   var clientCode = req.body.client;
-  createMoodForConsultant(email, mood, clientCode, function() {
+  var notes = req.body.notes;
+  var tags = req.body.tags;
+  createMoodForConsultant(email, mood, clientCode, notes, tags, function () {
     res.status(200);
     res.json({
       success: true
     });
 
+    next();
+  });
+};
+
+
+function searchConsultantsFromRepo(search, callback) {
+  var query = [
+    'MATCH (co:Consultant)',
+    'where co.firstName =~ "(?i).*' + search + '.*"',
+    'or co.lastName =~ "(?i).*' + search + '.*"',
+    'RETURN co'
+  ].join('\n');
+
+  var params = {
+    searchString: search
+  };
+
+
+  db.query(query, params, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var clients = results.map(function (result) {
+      console.log(result.co.data);
+      return result.co.data;
+    });
+    callback(clients);
+  });
+}
+
+exports.searchClient = function (req, res, next) {
+  var search = req.params.search;
+  console.log('Consultant Search: ' + search);
+
+  searchConsultantsFromRepo(search, function (clients) {
+    res.send(clients);
     next();
   });
 };
