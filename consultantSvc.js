@@ -4,7 +4,7 @@
 function getConsultantClientsFromRepo(email, callback) {
   var query = [
     'MATCH (co:Consultant {email:{emailAddress}})-->(en:Engagement)-->(cl:Client)',
-    'RETURN cl;'
+    'RETURN cl.clientCode as clientCode, cl.contact as contact, cl.name as name, collect(en.name) as engagements;'
   ].join('\n');
 
   var params = {
@@ -17,8 +17,8 @@ function getConsultantClientsFromRepo(email, callback) {
     }
 
     var clients = results.map(function (result) {
-      console.log(result.cl.data);
-      return result.cl.data;
+      console.log(result);
+      return result;
     });
 
     callback(clients);
