@@ -94,8 +94,8 @@ exports.getClientsOfConsultant = function (req, res, next) {
 
 function getConsultantMoodsFromRepo(email, callback) {
   var query = [
-    'MATCH (mood: `Mood`)<--(senti: `Sentiment`)<--(cons: `Consultant`{email:{emailAddress}}), (senti)-->(client: `Client`), (senti)-->(day: `Day`)-->(month:`Month`)-->(year: `Year`)',
-    'RETURN mood, senti, cons, client, day, month, year'
+    'MATCH (mood: Mood)<--(senti: Sentiment)-[:AT*2]->(month:Month)-->(year: Year), (senti)--(co:Consultant{email:{emailAddress}})',
+    'RETURN  year.year as year, month.month as month,mood.name as mood, count(*) as count order by year.year, month.month'
   ].join('\n');
 
   var params = {
@@ -108,16 +108,7 @@ function getConsultantMoodsFromRepo(email, callback) {
     }
     var moods = results.map(function (result) {
       console.log(result);
-      var data = {
-        mood: result.mood.data,
-        sentiment: result.senti.data,
-        consultant: result.cons.data,
-        client: result.client.data,
-        day: result.day.data,
-        month: result.month.data,
-        year: result.year.data
-      }
-      return data;
+      return result;
     });
 
     callback(moods);
