@@ -5,6 +5,7 @@
   "description": "Consultant-XRay-API",
   "author": "SMS",
   "dependencies": {
-    "restify": "2.8.4"
+    "neo4j": "^1.1.1",
+    "restify": "^2.8.4"
   }
 }
