@@ -87,6 +87,7 @@ function getClientsFromRepo(callback) {
   });
 }
 
+/*jslint unparam: true*/
 exports.getClients = function (req, res, next) {
   console.log("Get Clients");
 
@@ -95,3 +96,4 @@ exports.getClients = function (req, res, next) {
     next();
   });
 };
+/*jslint unparam: false*/

@@ -65,7 +65,7 @@ function createMoodForConsultant(email, mood, clientCode, callback) {
     consultantMood: mood,
     clientCode: clientCode,
     day: date.getDate(),
-    month: date.getMonth()+1,
+    month: date.getMonth() + 1,
     year: date.getFullYear()
   };
 
@@ -162,7 +162,7 @@ exports.postMood = function (req, res, next) {
   var email = req.params.email;
   var mood = req.body.mood;
   var clientCode = req.body.client;
-  createMoodForConsultant(email, mood, clientCode, function() {
+  createMoodForConsultant(email, mood, clientCode, function () {
     res.status(200);
     res.json({
       success: true
