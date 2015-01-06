@@ -34,7 +34,7 @@ exports.getClientsOfConsultant = function (req, res, next) {
 };
 
 
-function createMoodForConsultant(email, callback) {
+function createMoodForConsultant(email, mood, clientCode, callback) {
   //Example Create
   //'CREATE (:Consultant {firstName:"Dave", lastName:"Carroll", phone:"0400555666", email:"dave.carr@smsmt.com", employeeId:"007"});'
   // Example Relationship
@@ -42,15 +42,15 @@ function createMoodForConsultant(email, callback) {
   //'where c.employeeId = "007" AND e.name="Contact Centre Optimisiation"',
   // 'create (c)-[:engagedOn]->(e);'
   var query = [
-    'MATCH (mo:Mood {name: "indifferent"}), (cons:Consultant{email: "dave.carr@smsmt.com"}), (client:Client{clientCode: "123"})',
-    'MERGE (day:Day {day: toInt("6"), month: toInt("1"), year:toInt("2015")})',
-    'MERGE (month:Month {month: toInt("1"), year: toInt("2015")})',
-    'MERGE (year:Year {year: toInt("2015")})',
+    'MATCH (mo:Mood {name: {consultantMood}}), (cons:Consultant{email: {emailAddress}}), (client:Client{clientCode: {clientCode}})',
+    'MERGE (day:Day {day: toInt({day}), month: toInt({month}), year:toInt({year})})',
+    'MERGE (month:Month {month: toInt({month}), year: toInt({year})})',
+    'MERGE (year:Year {year: toInt({year})})',
     'MERGE (cal:Calendar {name: "root"})',
     'MERGE (day)-[:AT]-(month)',
     'MERGE (month)-[:AT]-(year)',
     'MERGE (year)-[:AT]-(cal)',
-    'CREATE (senti:Sentiment{timeofday:"01:00:00 PM"})-[:AT]->(day)',
+    'CREATE (senti:Sentiment{timeofday:"07:00:00 PM"})-[:AT]->(day)',
     'CREATE (senti)-[:EMOTION]->(mo)',
     'CREATE (senti)-[:TOWARDS]->(client)',
     'CREATE (cons)-[:FELT]->(senti);'
@@ -58,11 +58,19 @@ function createMoodForConsultant(email, callback) {
 
   console.log(query);
 
+  var date = new Date();
   var params = {
-    emailAddress: email
+    emailAddress: email,
+    consultantMood: mood,
+    clientCode: clientCode,
+    day: date.getDate(),
+    month: date.getMonth()+1,
+    year: date.getFullYear()
   };
 
-  db.query(query, null, function (err, results) {
+  console.log(params);
+
+  db.query(query, params, function (err, results) {
     if (err) {
       throw err;
     }
@@ -70,7 +78,7 @@ function createMoodForConsultant(email, callback) {
       console.log(result);
       return result;
     });
-    callback(clients);
+    callback();
   });
 }
 
@@ -117,11 +125,16 @@ exports.getConsultant = function (req, res, next) {
 };
 
 exports.postMood = function (req, res, next) {
-  console.log(req.body.mood);
-  res.status(200);
-  res.json({
-    type: true
-  });
 
-  next();
+  var email = req.params.email;
+  var mood = req.body.consultantmood;
+  var clientCode = req.body.clientcode;
+  createMoodForConsultant(email, mood, clientCode, function() {
+    res.status(200);
+    res.json({
+      success: true
+    });
+
+    next();
+  });
 };
