@@ -120,6 +120,30 @@ function getConsultantMoodsFromRepo(email, callback) {
   });
 }
 
+function getConsultantObservationsFromRepo(email, callback) {
+  var query = [
+    'MATCH (co:`Consultant` {email: {emailAddress}})-->(obs:`Observation`)-->(day:`Day`)-->(month:`Month`)-->(year: `Year`), (obs)--(cl:`Client`{clientCode:"123"})',
+    'OPTIONAL MATCH (obs)-->(tag:`Tag`)',
+    'RETURN obs.timeofday as timeofday, day.day as day, day.month as month, day.year as year, obs.text as observation, cl.name, collect(tag.tag) as tags ORDER BY day.year, day.month, day.day, obs.timeofday;'
+  ].join('\n');
+
+  var params = {
+    emailAddress: email
+  };
+
+  db.query(query, params, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var observations = results.map(function (result) {
+      console.log(result);
+      return result;
+    });
+
+    callback(observations);
+  });
+}
+
 function getConsultantFromRepo(email, callback) {
   var query = [
     'MATCH (n:`Consultant` {email:{emailAddress}})',
@@ -186,6 +210,16 @@ exports.getMoods = function (req, res, next) {
   });
 };
 
+exports.getObservations = function (req, res, next) {
+  var email = req.params.email;
+  console.log("Consultant: " + email);
+
+  getConsultantObservationsFromRepo(email, function (observations) {
+    res.send(observations);
+    next();
+  });
+};
+
 exports.postMood = function (req, res, next) {
   var email = req.params.email;
   var mood = req.body.mood;
@@ -198,6 +232,42 @@ exports.postMood = function (req, res, next) {
       success: true
     });
 
+    next();
+  });
+};
+
+
+function searchConsultantsFromRepo(search, callback) {
+  var query = [
+    'MATCH (co:Consultant)',
+    'where co.firstName =~ "(?i).*' + search + '.*"',
+    'or co.lastName =~ "(?i).*' + search + '.*"',
+    'RETURN co'
+  ].join('\n');
+
+  var params = {
+    searchString: search
+  };
+
+
+  db.query(query, params, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var clients = results.map(function (result) {
+      console.log(result.co.data);
+      return result.co.data;
+    });
+    callback(clients);
+  });
+}
+
+exports.searchClient = function (req, res, next) {
+  var search = req.params.search;
+  console.log('Consultant Search: ' + search);
+
+  searchConsultantsFromRepo(search, function (clients) {
+    res.send(clients);
     next();
   });
 };
