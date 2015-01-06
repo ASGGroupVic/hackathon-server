@@ -205,7 +205,9 @@ exports.postMood = function (req, res, next) {
 
 function searchConsultantsFromRepo(search, callback) {
   var query = [
-    'MATCH (co:`Consultant` {firstName:{searchString}})',
+    'MATCH (co:Consultant)',
+    'where co.firstName =~ "(?i).*' + search + '.*"',
+    'or co.lastName =~ "(?i).*' + search + '.*"',
     'RETURN co'
   ].join('\n');
 
