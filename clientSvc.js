@@ -24,11 +24,11 @@ function getMoodForClient(code, callback) {
   });
 }
 
-function getObservationsForClient(clientId, callback) {
+function getSentimentsForClient(clientId, callback) {
   var query = [
-    'MATCH (co:`Consultant`)-->(obs:`Observation`)-->(day:`Day`)-->(month:`Month`)-->(year: `Year`), (obs)--(cl:`Client`{clientCode:{clientId}})',
-    'OPTIONAL MATCH (obs)-->(tag:`Tag`)',
-    'RETURN obs.timeofday as timeofday, day.day as day, day.month as month, day.year as year, obs.text as observation, co.firstName as firstName, co.lastName as lastName, co.email as email, collect(tag.tag) as tags ORDER BY day.year, day.month, day.day, obs.timeofday;'
+    'MATCH (co:`Consultant`)-->(senti:`Sentiment`)-->(day:`Day`)-->(month:`Month`)-->(year: `Year`), (senti)--(cl:`Client`{clientCode:{clientId}}), (senti)--(mood:`Mood`)',
+    'OPTIONAL MATCH (senti)-->(tag:`Tag`)',
+    'RETURN senti.timeofday as timeofday, day.day as day, day.month as month, day.year as year, mood.name as mood, senti.comment as comment, co.firstName as firstName, co.lastName as lastName, co.email as email, collect(tag.tag) as tags ORDER BY day.year, day.month, day.day, senti.timeofday;'
   ].join('\n');
 
   var params = {
@@ -39,12 +39,12 @@ function getObservationsForClient(clientId, callback) {
     if (err) {
       throw err;
     }
-    var observations = results.map(function (result) {
+    var sentiments = results.map(function (result) {
       console.log(result);
       return result;
     });
 
-    callback(observations);
+    callback(sentiments);
   });
 }
 
@@ -61,12 +61,12 @@ exports.getMood = function (req, res, next) {
   });
 };
 
-exports.getObservations = function (req, res, next) {
+exports.getSentiments = function (req, res, next) {
   var code = req.params.code;
   console.log('Client: ' + code);
 
-  getObservationsForClient(code, function (observations) {
-    res.send(observations);
+  getSentimentsForClient(code, function (sentiments) {
+    res.send(sentiments);
     next();
   });
 };

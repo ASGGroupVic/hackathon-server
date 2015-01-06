@@ -12,6 +12,7 @@ CREATE (:Consultant {firstName:"Tom", lastName:"Sti", phone:"0400555666", email:
 CREATE (:Consultant {firstName:"Dav", lastName:"Car", phone:"0400666777", email:"dav.car@smsmt.com", employeeId:"2406"});
 CREATE (:Consultant {firstName:"Ant", lastName:"Pas", phone:"0400777888", email:"ant.pas@smsmt.com", employeeId:"2407"});
 CREATE (:Consultant {firstName:"Sha", lastName:"Gri", phone:"0400888999", email:"sha.gri@smsmt.com", employeeId:"2408"});
+CREATE (:Consultant {firstName:"Hen", lastName:"Niu", phone:"0400999000", email:"hen.niu@smsmt.com", employeeId:"2409"});
 
 // create some clients
 CREATE (:Client {name:"Telstra", contact:"John Brown", clientCode:"123"})
@@ -29,14 +30,20 @@ CREATE (:Mood {name:"postal", description:"I cant take this sh!t anymore", ratin
 
 // create engagements
 CREATE (:Engagement {name:"Contact Centre Optimisiation", Client:"Telstra"})
+CREATE (:Engagement {name:"First Contact Optimisiation", Client:"Telstra"})
 CREATE (:Engagement {name:"Cloud Migration", Client:"Australia Post"});
 CREATE (:Engagement {name:"Financial Services", Client:"ANZ"});
 CREATE (:Engagement {name:"SDF", Client:"Sensis"});
+CREATE (:Engagement {name:"Morph", Client:"Sensis", completed:true});
 CREATE (:Engagement {name:"Financial Packages", Client:"Westpac"});
 
 // link the engagements to clients
 MATCH (e:Engagement),(c:Client)
 WHERE c.name="Telstra" AND e.name="Contact Centre Optimisiation"
+CREATE (e)-[r:with]->(c);
+
+MATCH (e:Engagement),(c:Client)
+WHERE c.name="Telstra" AND e.name="First Contact Optimisiation"
 CREATE (e)-[r:with]->(c);
 
 MATCH (e:Engagement),(c:Client)
@@ -49,6 +56,10 @@ CREATE (e)-[r:with]->(c);
 
 MATCH (e:Engagement),(c:Client)
 WHERE c.name="Sensis" AND e.name="SDF"
+CREATE (e)-[r:with]->(c);
+
+MATCH (e:Engagement),(c:Client)
+WHERE c.name="Sensis" AND e.name="Morph"
 CREATE (e)-[r:with]->(c);
 
 MATCH (e:Engagement),(c:Client)
@@ -69,11 +80,11 @@ where c.employeeId = "2402" AND e.name="Contact Centre Optimisiation"
 create (c)-[:engagedOn]->(e);
 
 match (c:Consultant),(e:Engagement)
-where c.employeeId = "2403" AND e.name="Contact Centre Optimisiation"
+where c.employeeId = "2403" AND e.name="First Contact Optimisiation"
 create (c)-[:engagedOn]->(e);
 
 match (c:Consultant),(e:Engagement)
-where c.employeeId = "2404" AND e.name="Contact Centre Optimisiation"
+where c.employeeId = "2404" AND e.name="First Contact Optimisiation"
 create (c)-[:engagedOn]->(e);
 
 match (c:Consultant),(e:Engagement)
@@ -90,4 +101,12 @@ create (c)-[:engagedOn]->(e);
 
 match (c:Consultant),(e:Engagement)
 where c.employeeId = "2408" AND e.name="Financial Packages"
+create (c)-[:engagedOn]->(e);
+
+match (c:Consultant),(e:Engagement)
+where c.employeeId = "2409" AND e.name="Morph"
+create (c)-[:engagedOn]->(e);
+
+match (c:Consultant),(e:Engagement)
+where c.employeeId = "2409" AND e.name="SDF"
 create (c)-[:engagedOn]->(e);
