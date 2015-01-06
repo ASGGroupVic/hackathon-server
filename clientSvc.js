@@ -132,3 +132,37 @@ exports.getConsultantsbyClientCode = function (req, res, next) {
   });
 };
 
+function searchClientsFromRepo(search, callback) {
+  var query = [
+     //MATCH (n:`Consul` {email:{emailAddress}})
+    'MATCH (cl:`Client` {clientCode:{searchString}})',
+    'RETURN cl'
+  ].join('\n');
+
+  var params = {
+    searchString: search
+  };
+
+
+  db.query(query, params, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var clients = results.map(function (result) {
+      console.log(result.cl.data);
+      return result.cl.data;
+    });
+    callback(clients);
+  });
+}
+
+exports.searchClient = function (req, res, next) {
+  var search = req.params.search;
+  console.log('Client Search: ' + search);
+
+  searchClientsFromRepo(search, function (clients) {
+    res.send(clients);
+    next();
+  });
+};
+
