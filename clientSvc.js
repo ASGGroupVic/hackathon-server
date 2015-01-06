@@ -72,3 +72,31 @@ exports.getClient = function (req, res, next) {
     next();
   });
 };
+
+
+function getClientsFromRepo(callback) {
+  var query = [
+    'MATCH (n:`Client`)',
+    'RETURN n'
+  ].join('\n');
+
+  db.query(query, null, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var clients = results.map(function (result) {
+      console.log(result.n.data);
+      return result.n.data;
+    });
+    callback(clients);
+  });
+}
+
+exports.getClients = function (req, res, next) {
+  console.log("Get Clients");
+
+  getClientsFromRepo(function (clients) {
+    res.send(clients);
+    next();
+  });
+};
