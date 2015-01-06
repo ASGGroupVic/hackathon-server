@@ -34,6 +34,7 @@ server.get('/v1/client/:code', clientSvc.getClient);
 server.get('/v1/client/:code/mood', clientSvc.getMood);
 server.get('/v1/client/:code/observations', clientSvc.getObservations);
 server.get('/v1/client/:code/consultants', clientSvc.getConsultantsbyClientCode);
+server.get('/v1/client/:code/engagements', clientSvc.getEngagementsbyClientCode);
 server.get('/v1/client/search/:search', clientSvc.searchClient);
 
 server.listen(8080, function () {

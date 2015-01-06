@@ -194,3 +194,35 @@ exports.searchClient = function (req, res, next) {
   });
 };
 
+
+function getEngagementsforClientFromRepo(clientCode, callback) {
+  var query = [
+    'MATCH (en:Engagement)-->(cl:Client {clientCode:{cCode}})',
+    'RETURN en'
+  ].join('\n');
+
+  var params = {
+    cCode: clientCode
+  };
+
+  db.query(query, params, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var engagements = results.map(function (result) {
+      console.log(result.en.data);
+      return result.en.data;
+    });
+    callback(engagements);
+  });
+}
+
+exports.getEngagementsbyClientCode = function (req, res, next) {
+  var code = req.params.code;
+  console.log('Client: ' + code);
+
+  getEngagementsforClientFromRepo(code, function (engagements) {
+    res.send(engagements);
+    next();
+  });
+};
