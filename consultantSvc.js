@@ -20,6 +20,7 @@ function getConsultantClientsFromRepo(email, callback) {
       console.log(result.cl.data);
       return result.cl.data;
     });
+
     callback(clients);
   });
 }
@@ -91,6 +92,37 @@ exports.getClientsOfConsultant = function (req, res, next) {
   });
 };
 
+function getConsultantMoodsFromRepo(email, callback) {
+  var query = [
+    'MATCH (mood: `Mood`)<--(senti: `Sentiment`)<--(cons: `Consultant`{email:{emailAddress}}), (senti)-->(client: `Client`), (senti)-->(day: `Day`)-->(month:`Month`)-->(year: `Year`)',
+    'RETURN mood, senti, cons, client, day, month, year'
+  ].join('\n');
+
+  var params = {
+    emailAddress: email
+  };
+
+  db.query(query, params, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var moods = results.map(function (result) {
+      console.log(result);
+      var data = {
+        mood: result.mood.data,
+        sentiment: result.senti.data,
+        consultant: result.cons.data,
+        client: result.client.data,
+        day: result.day.data,
+        month: result.month.data,
+        year: result.year.data
+      }
+      return data;
+    });
+
+    callback(moods);
+  });
+}
 
 function getConsultantFromRepo(email, callback) {
   var query = [
@@ -120,6 +152,16 @@ exports.getConsultant = function (req, res, next) {
 
   getConsultantFromRepo(email, function (consultant) {
     res.send(consultant);
+    next();
+  });
+};
+
+exports.getMoods = function (req, res, next) {
+  var email = req.params.email;
+  console.log("Consultant: " + email);
+
+  getConsultantMoodsFromRepo(email, function (moods) {
+    res.send(moods);
     next();
   });
 };
