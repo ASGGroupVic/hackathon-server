@@ -46,16 +46,13 @@ function createMoodForConsultant(email, mood, clientCode, notes, tags, callback)
     'MERGE (day)-[:AT]-(month)',
     'MERGE (month)-[:AT]-(year)',
     'MERGE (year)-[:AT]-(cal)',
-    'CREATE (senti:Sentiment{timeofday:{timeOfDay}})-[:AT]->(day)',
+    'CREATE (senti:Sentiment{timeofday:{timeOfDay}, comment: {comment}})-[:AT]->(day)',
     'CREATE (senti)-[:EMOTION]->(mo)',
     'CREATE (senti)-[:TOWARDS]->(client)',
     'CREATE (cons)-[:FELT]->(senti)',
-    'CREATE (obs:Observation{timeofday: {timeOfDay}, text: {observation}})-[:AT]->(day)',
-    'CREATE (cons)-[:MADE]->(obs)',
-    'CREATE (obs)-[:TOWARDS]->(client)',
     'FOREACH(t in split({tags}, ",") |',
     'MERGE (newTag:Tag{tag:t})',
-    'CREATE (obs)-[:TAGGED]->(newTag));'
+    'CREATE (senti)-[:TAGGED]->(newTag));'
   ].join('\n');
 
   console.log(query);
@@ -70,7 +67,7 @@ function createMoodForConsultant(email, mood, clientCode, notes, tags, callback)
     month: now_utc.getMonth() + 1,
     year: now_utc.getFullYear(),
     timeOfDay: now_utc.toLocaleTimeString(),
-    observation: notes,
+    comment: notes,
     tags: tags
   };
 
@@ -120,11 +117,11 @@ function getConsultantMoodsFromRepo(email, callback) {
   });
 }
 
-function getConsultantObservationsFromRepo(email, callback) {
+function getConsultantSentimentsFromRepo(email, callback) {
   var query = [
-    'MATCH (co:`Consultant` {email: {emailAddress}})-->(obs:`Observation`)-->(day:`Day`)-->(month:`Month`)-->(year: `Year`), (obs)--(cl:`Client`{clientCode:"123"})',
-    'OPTIONAL MATCH (obs)-->(tag:`Tag`)',
-    'RETURN obs.timeofday as timeofday, day.day as day, day.month as month, day.year as year, obs.text as observation, cl.name, collect(tag.tag) as tags ORDER BY day.year, day.month, day.day, obs.timeofday;'
+    'MATCH (co:`Consultant` {email: {emailAddress}})-->(senti:`Sentiment`)-->(day:`Day`)-->(month:`Month`)-->(year: `Year`), (senti)--(cl:`Client`)',
+    'OPTIONAL MATCH (senti)-->(tag:`Tag`)',
+    'RETURN senti.timeofday as timeofday, day.day as day, day.month as month, day.year as year, senti.comment as comment, cl.name, collect(tag.tag) as tags ORDER BY day.year, day.month, day.day, senti.timeofday;'
   ].join('\n');
 
   var params = {
@@ -135,12 +132,12 @@ function getConsultantObservationsFromRepo(email, callback) {
     if (err) {
       throw err;
     }
-    var observations = results.map(function (result) {
+    var sentiments = results.map(function (result) {
       console.log(result);
       return result;
     });
 
-    callback(observations);
+    callback(sentiments);
   });
 }
 
@@ -192,6 +189,7 @@ exports.getConsultant = function (req, res, next) {
     next();
   });
 };
+
 /*jslint unparam: true*/
 exports.getConsultants = function (req, res, next) {
   getConsultantsFromRepo(function (consultants) {
@@ -199,6 +197,7 @@ exports.getConsultants = function (req, res, next) {
     next();
   });
 };
+
 /*jslint unparam: false*/
 exports.getMoods = function (req, res, next) {
   var email = req.params.email;
@@ -210,12 +209,12 @@ exports.getMoods = function (req, res, next) {
   });
 };
 
-exports.getObservations = function (req, res, next) {
+exports.getSentiments = function (req, res, next) {
   var email = req.params.email;
   console.log("Consultant: " + email);
 
-  getConsultantObservationsFromRepo(email, function (observations) {
-    res.send(observations);
+  getConsultantSentimentsFromRepo(email, function (sentiments) {
+    res.send(sentiments);
     next();
   });
 };
@@ -226,6 +225,7 @@ exports.postMood = function (req, res, next) {
   var clientCode = req.body.client;
   var notes = req.body.notes;
   var tags = req.body.tags;
+  console.log("in postMood: email: " + email + "mood: " + mood + "clientCode: " + clientCode + "notes: " + notes + "tags: " + tags);
   createMoodForConsultant(email, mood, clientCode, notes, tags, function () {
     res.status(200);
     res.json({

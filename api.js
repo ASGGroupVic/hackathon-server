@@ -26,13 +26,13 @@ server.get('/v1/consultant/:email', consultantSvc.getConsultant);
 server.get('/v1/consultant/:email/clients', consultantSvc.getClientsOfConsultant);
 server.post('/v1/consultant/:email/mood', consultantSvc.postMood);
 server.get('/v1/consultant/:email/mood', consultantSvc.getMoods);
-server.get('/v1/consultant/:email/observations', consultantSvc.getObservations);
+server.get('/v1/consultant/:email/sentiments', consultantSvc.getSentiments);
 server.get('/v1/consultant/search/:search', consultantSvc.searchClient);
 
 server.get('/v1/client', clientSvc.getClients);
 server.get('/v1/client/:code', clientSvc.getClient);
 server.get('/v1/client/:code/mood', clientSvc.getMood);
-server.get('/v1/client/:code/observations', clientSvc.getObservations);
+server.get('/v1/client/:code/sentiments', clientSvc.getSentiments);
 server.get('/v1/client/:code/consultants', clientSvc.getConsultantsbyClientCode);
 server.get('/v1/client/:code/engagements', clientSvc.getEngagementsbyClientCode);
 server.get('/v1/client/search/:search', clientSvc.searchClient);
