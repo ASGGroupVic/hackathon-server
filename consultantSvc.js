@@ -119,9 +119,9 @@ function getConsultantMoodsFromRepo(email, callback) {
 
 function getConsultantSentimentsFromRepo(email, callback) {
   var query = [
-    'MATCH (co:`Consultant` {email: {emailAddress}})-->(senti:`Sentiment`)-->(day:`Day`)-->(month:`Month`)-->(year: `Year`), (senti)--(cl:`Client`)',
+    'MATCH (co:`Consultant` {email: {emailAddress}})-->(senti:`Sentiment`)-->(day:`Day`)-->(month:`Month`)-->(year: `Year`), (senti)--(cl:`Client`), (senti)--(mood:`Mood`)',
     'OPTIONAL MATCH (senti)-->(tag:`Tag`)',
-    'RETURN senti.timeofday as timeofday, day.day as day, day.month as month, day.year as year, senti.comment as comment, cl.name, collect(tag.tag) as tags ORDER BY day.year, day.month, day.day, senti.timeofday;'
+    'RETURN senti.timeofday as timeofday, day.day as day, day.month as month, day.year as year, mood.name as mood, senti.comment as comment, cl.name as clientName, collect(tag.tag) as tags ORDER BY day.year, day.month, day.day, senti.timeofday;'
   ].join('\n');
 
   var params = {

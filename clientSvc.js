@@ -26,9 +26,9 @@ function getMoodForClient(code, callback) {
 
 function getSentimentsForClient(clientId, callback) {
   var query = [
-    'MATCH (co:`Consultant`)-->(senti:`Sentiment`)-->(day:`Day`)-->(month:`Month`)-->(year: `Year`), (senti)--(cl:`Client`{clientCode:{clientId}})',
+    'MATCH (co:`Consultant`)-->(senti:`Sentiment`)-->(day:`Day`)-->(month:`Month`)-->(year: `Year`), (senti)--(cl:`Client`{clientCode:{clientId}}), (senti)--(mood:`Mood`)',
     'OPTIONAL MATCH (senti)-->(tag:`Tag`)',
-    'RETURN senti.timeofday as timeofday, day.day as day, day.month as month, day.year as year, senti.comment as comment, co.firstName as firstName, co.lastName as lastName, co.email as email, collect(tag.tag) as tags ORDER BY day.year, day.month, day.day, senti.timeofday;'
+    'RETURN senti.timeofday as timeofday, day.day as day, day.month as month, day.year as year, mood.name as mood, senti.comment as comment, co.firstName as firstName, co.lastName as lastName, co.email as email, collect(tag.tag) as tags ORDER BY day.year, day.month, day.day, senti.timeofday;'
   ].join('\n');
 
   var params = {
