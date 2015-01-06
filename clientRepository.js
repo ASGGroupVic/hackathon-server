@@ -48,30 +48,7 @@ function getSentimentsForClient(clientId, callback) {
   });
 }
 
-exports.getMood = function (req, res, next) {
-
-  var code = req.params.code;
-  console.log('Client: ' + code);
-
-  getMoodForClient(code, function (mood) {
-    console.log('Hooray! ' + mood);
-
-    res.send(mood);
-    next();
-  });
-};
-
-exports.getSentiments = function (req, res, next) {
-  var code = req.params.code;
-  console.log('Client: ' + code);
-
-  getSentimentsForClient(code, function (sentiments) {
-    res.send(sentiments);
-    next();
-  });
-};
-
-function getClientFromRepo(clientCode, callback) {
+function getClient(clientCode, callback) {
   var query = [
     'MATCH (n:`Client` {clientCode:{cCode}})',
     'RETURN n'
@@ -93,18 +70,7 @@ function getClientFromRepo(clientCode, callback) {
   });
 }
 
-exports.getClient = function (req, res, next) {
-  var clientCode = req.params.code;
-  console.log("Client: " + clientCode);
-
-  getClientFromRepo(clientCode, function (client) {
-    res.send(client);
-    next();
-  });
-};
-
-
-function getClientsFromRepo(callback) {
+function getClients(callback) {
   var query = [
     'MATCH (n:`Client`)',
     'RETURN n'
@@ -122,18 +88,7 @@ function getClientsFromRepo(callback) {
   });
 }
 
-/*jslint unparam: true*/
-exports.getClients = function (req, res, next) {
-  console.log("Get Clients");
-
-  getClientsFromRepo(function (clients) {
-    res.send(clients);
-    next();
-  });
-};
-/*jslint unparam: false*/
-
-function getConsultantforClientsFromRepo(clientCode, callback) {
+function getConsultantforClients(clientCode, callback) {
   var query = [
     'MATCH (co:Consultant)-->(en:Engagement)-->(cl:Client {clientCode:{cCode}})',
     'RETURN en.name as engagementName, en.completed as completed, co.phone as phone, co.employeeId as employeeId, co.firstName as firstname, co.lastName as lastName, co.email as email'
@@ -155,17 +110,7 @@ function getConsultantforClientsFromRepo(clientCode, callback) {
   });
 }
 
-exports.getConsultantsbyClientCode = function (req, res, next) {
-  var code = req.params.code;
-  console.log('Client: ' + code);
-
-  getConsultantforClientsFromRepo(code, function (consultants) {
-    res.send(consultants);
-    next();
-  });
-};
-
-function searchClientsFromRepo(search, callback) {
+function searchClients(search, callback) {
   var query = [
     'MATCH (cl:Client)',
     'where cl.name =~ "(?i).*' + search + '.*"',
@@ -184,18 +129,7 @@ function searchClientsFromRepo(search, callback) {
   });
 }
 
-exports.searchClient = function (req, res, next) {
-  var search = req.params.search;
-  console.log('Client Search: ' + search);
-
-  searchClientsFromRepo(search, function (clients) {
-    res.send(clients);
-    next();
-  });
-};
-
-
-function getEngagementsforClientFromRepo(clientCode, callback) {
+function getEngagementsforClient(clientCode, callback) {
   var query = [
     'MATCH (en:Engagement)-->(cl:Client {clientCode:{cCode}})',
     'RETURN en'
@@ -217,12 +151,12 @@ function getEngagementsforClientFromRepo(clientCode, callback) {
   });
 }
 
-exports.getEngagementsbyClientCode = function (req, res, next) {
-  var code = req.params.code;
-  console.log('Client: ' + code);
-
-  getEngagementsforClientFromRepo(code, function (engagements) {
-    res.send(engagements);
-    next();
-  });
+module.exports = {
+  getMoodForClient: getMoodForClient,
+  getSentimentsForClient: getSentimentsForClient,
+  getClient: getClient,
+  getClients: getClients,
+  getConsultantforClients: getConsultantforClients,
+  searchClients: searchClients,
+  getEngagementsforClient: getEngagementsforClient
 };

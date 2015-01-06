@@ -1,7 +1,7 @@
 'use strict';
 /*global db*/
 
-function getConsultantClientsFromRepo(email, callback) {
+function getConsultantClients(email, callback) {
   var query = [
     'MATCH (co:Consultant {email:{emailAddress}})-->(en:Engagement)-->(cl:Client)',
     'RETURN cl.clientCode as clientCode, cl.contact as contact, cl.name as name, collect(en.name) as engagements;'
@@ -24,16 +24,6 @@ function getConsultantClientsFromRepo(email, callback) {
     callback(clients);
   });
 }
-
-exports.getClientsOfConsultant = function (req, res, next) {
-  var email = req.params.email;
-  console.log("Consultant: " + email);
-  getConsultantClientsFromRepo(email, function (consultant) {
-    res.send(consultant);
-    next();
-  });
-};
-
 
 function createMoodForConsultant(email, mood, clientCode, notes, tags, callback) {
   var query = [
@@ -85,16 +75,7 @@ function createMoodForConsultant(email, mood, clientCode, notes, tags, callback)
   });
 }
 
-exports.getClientsOfConsultant = function (req, res, next) {
-  var email = req.params.email;
-  console.log("Consultant-clients: " + email);
-  getConsultantClientsFromRepo(email, function (consultant) {
-    res.send(consultant);
-    next();
-  });
-};
-
-function getConsultantMoodsFromRepo(email, callback) {
+function getConsultantMoods(email, callback) {
   var query = [
     'MATCH (mood: Mood)<--(senti: Sentiment)-[:AT*2]->(month:Month)-->(year: Year), (senti)--(co:Consultant{email:{emailAddress}})',
     'RETURN  year.year as year, month.month as month,mood.name as mood, count(*) as count order by year.year, month.month'
@@ -117,7 +98,7 @@ function getConsultantMoodsFromRepo(email, callback) {
   });
 }
 
-function getConsultantSentimentsFromRepo(email, callback) {
+function getConsultantSentiments(email, callback) {
   var query = [
     'MATCH (co:`Consultant` {email: {emailAddress}})-->(senti:`Sentiment`)-->(day:`Day`)-->(month:`Month`)-->(year: `Year`), (senti)--(cl:`Client`), (senti)--(mood:`Mood`)',
     'OPTIONAL MATCH (senti)-->(tag:`Tag`)',
@@ -141,7 +122,7 @@ function getConsultantSentimentsFromRepo(email, callback) {
   });
 }
 
-function getConsultantFromRepo(email, callback) {
+function getConsultant(email, callback) {
   var query = [
     'MATCH (n:`Consultant` {email:{emailAddress}})',
     'RETURN n'
@@ -163,7 +144,7 @@ function getConsultantFromRepo(email, callback) {
   });
 }
 
-function getConsultantsFromRepo(callback) {
+function getConsultants(callback) {
   var query = [
     'MATCH (n:`Consultant`)',
     'RETURN n'
@@ -180,64 +161,7 @@ function getConsultantsFromRepo(callback) {
   });
 }
 
-exports.getConsultant = function (req, res, next) {
-  var email = req.params.email;
-  console.log("Consultant: " + email);
-
-  getConsultantFromRepo(email, function (consultant) {
-    res.send(consultant);
-    next();
-  });
-};
-
-/*jslint unparam: true*/
-exports.getConsultants = function (req, res, next) {
-  getConsultantsFromRepo(function (consultants) {
-    res.send(consultants);
-    next();
-  });
-};
-
-/*jslint unparam: false*/
-exports.getMoods = function (req, res, next) {
-  var email = req.params.email;
-  console.log("Consultant: " + email);
-
-  getConsultantMoodsFromRepo(email, function (moods) {
-    res.send(moods);
-    next();
-  });
-};
-
-exports.getSentiments = function (req, res, next) {
-  var email = req.params.email;
-  console.log("Consultant: " + email);
-
-  getConsultantSentimentsFromRepo(email, function (sentiments) {
-    res.send(sentiments);
-    next();
-  });
-};
-
-exports.postMood = function (req, res, next) {
-  var email = req.params.email;
-  var mood = req.body.mood;
-  var clientCode = req.body.client;
-  var notes = req.body.notes;
-  var tags = req.body.tags;
-  console.log("in postMood: email: " + email + "mood: " + mood + "clientCode: " + clientCode + "notes: " + notes + "tags: " + tags);
-  createMoodForConsultant(email, mood, clientCode, notes, tags, function () {
-    res.status(200);
-    res.json({
-      success: true
-    });
-
-    next();
-  });
-};
-
-
-function searchConsultantsFromRepo(search, callback) {
+function searchConsultants(search, callback) {
   var query = [
     'MATCH (co:Consultant)',
     'where co.firstName =~ "(?i).*' + search + '.*"',
@@ -262,27 +186,7 @@ function searchConsultantsFromRepo(search, callback) {
   });
 }
 
-exports.searchClient = function (req, res, next) {
-  var search = req.params.search;
-  console.log('Consultant Search: ' + search);
-
-  searchConsultantsFromRepo(search, function (clients) {
-    res.send(clients);
-    next();
-  });
-};
-
-exports.getLast5Moods = function (req, res, next) {
-  var email = req.params.email;
-  console.log("Consultant: " + email);
-
-  getLast5ConsultantMoodsFromRepo(email, function (moods) {
-    res.send(moods);
-    next();
-  });
-};
-
-function getLast5ConsultantMoodsFromRepo(email, callback) {
+function getLast5ConsultantMoods(email, callback) {
   var query = [
     'MATCH (mood: Mood)<--(senti: Sentiment)-->(day:Day)-->(month:Month)-->(year: Year), (senti)--(co:Consultant{email:{emailAddress}})',
     'RETURN  year.year as year, month.month as month, day.day as day, mood.name as mood, count(*) as count order by year.year, month.month, day.day',
@@ -305,3 +209,14 @@ function getLast5ConsultantMoodsFromRepo(email, callback) {
     callback(moods);
   });
 }
+
+module.exports = {
+  getConsultantClients: getConsultantClients,
+  createMoodForConsultant: createMoodForConsultant,
+  getConsultantMoods: getConsultantMoods,
+  getConsultantSentiments: getConsultantSentiments,
+  getConsultant: getConsultant,
+  getConsultants: getConsultants,
+  searchConsultants: searchConsultants,
+  getLast5ConsultantMoods: getLast5ConsultantMoods
+};
