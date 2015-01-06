@@ -28,6 +28,7 @@ server.post('/v1/consultant/:email/mood', consultantSvc.postMood);
 server.get('/v1/consultant/:email/mood', consultantSvc.getMoods);
 server.get('/v1/consultant/:email/sentiments', consultantSvc.getSentiments);
 server.get('/v1/consultant/search/:search', consultantSvc.searchClient);
+server.get('/v1/consultant/:email/last5mood', consultantSvc.getLast5Moods);
 
 server.get('/v1/client', clientSvc.getClients);
 server.get('/v1/client/:code', clientSvc.getClient);

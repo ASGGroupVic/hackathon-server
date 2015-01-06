@@ -271,3 +271,37 @@ exports.searchClient = function (req, res, next) {
     next();
   });
 };
+
+exports.getLast5Moods = function (req, res, next) {
+  var email = req.params.email;
+  console.log("Consultant: " + email);
+
+  getLast5ConsultantMoodsFromRepo(email, function (moods) {
+    res.send(moods);
+    next();
+  });
+};
+
+function getLast5ConsultantMoodsFromRepo(email, callback) {
+  var query = [
+    'MATCH (mood: Mood)<--(senti: Sentiment)-->(day:Day)-->(month:Month)-->(year: Year), (senti)--(co:Consultant{email:{emailAddress}})',
+    'RETURN  year.year as year, month.month as month, day.day as day, mood.name as mood, count(*) as count order by year.year, month.month, day.day',
+    'LIMIT 5'
+  ].join('\n');
+
+  var params = {
+    emailAddress: email
+  };
+
+  db.query(query, params, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var moods = results.map(function (result) {
+      console.log(result);
+      return result;
+    });
+
+    callback(moods);
+  });
+}
