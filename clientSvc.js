@@ -134,17 +134,12 @@ exports.getConsultantsbyClientCode = function (req, res, next) {
 
 function searchClientsFromRepo(search, callback) {
   var query = [
-     //MATCH (n:`Consul` {email:{emailAddress}})
-    'MATCH (cl:`Client` {clientCode:{searchString}})',
-    'RETURN cl'
+    'MATCH (cl:Client)',
+    'where cl.name =~ "(?i).*' + search + '.*"',
+    'RETURN cl;'
   ].join('\n');
 
-  var params = {
-    searchString: search
-  };
-
-
-  db.query(query, params, function (err, results) {
+  db.query(query, null, function (err, results) {
     if (err) {
       throw err;
     }

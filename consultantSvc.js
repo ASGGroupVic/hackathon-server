@@ -201,3 +201,37 @@ exports.postMood = function (req, res, next) {
     next();
   });
 };
+
+
+function searchConsultantsFromRepo(search, callback) {
+  var query = [
+    'MATCH (co:`Consultant` {firstName:{searchString}})',
+    'RETURN co'
+  ].join('\n');
+
+  var params = {
+    searchString: search
+  };
+
+
+  db.query(query, params, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var clients = results.map(function (result) {
+      console.log(result.co.data);
+      return result.co.data;
+    });
+    callback(clients);
+  });
+}
+
+exports.searchClient = function (req, res, next) {
+  var search = req.params.search;
+  console.log('Consultant Search: ' + search);
+
+  searchConsultantsFromRepo(search, function (clients) {
+    res.send(clients);
+    next();
+  });
+};
