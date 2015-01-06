@@ -11,14 +11,11 @@ MERGE (cal:Calendar {name: 'root'})
 MERGE (day)-[:AT]-(month)
 MERGE (month)-[:AT]-(year)
 MERGE (year)-[:AT]-(cal)
-CREATE (senti:Sentiment{timeofday:line.time})-[:AT]->(day)
+CREATE (senti:Sentiment{timeofday:line.time, comment: line.comment})-[:AT]->(day)
 CREATE (senti)-[:EMOTION]->(mo)
 CREATE (senti)-[:TOWARDS]->(client)
 CREATE (cons)-[:FELT]->(senti)
-
-CREATE (obs:Observation{timeofday: line.time, text: line.observation})-[:AT]->(day)
-CREATE (cons)-[:MADE]->(obs)
-CREATE (obs)-[:TOWARDS]->(client)
 FOREACH(t in split(line.tags, ",") | 
 	MERGE (newTag:Tag{tag:t}) 
-	CREATE (obs)-[:TAGGED]->(newTag));
+	CREATE (senti)-[:TAGGED]->(newTag));
+

@@ -1,4 +1,4 @@
-"mood", "email", "clientcode", "time", "day", "month", "year", "observation", "tags"
+"mood", "email", "clientcode", "time", "day", "month", "year", "comment", "tags"
 "bored", "war.sla@smsmt.com", "123", "10:00:00 AM", 5, 7, 2014, "New CEO Appointed", "news,change"
 "happy", "fad.sud@smsmt.com", "123", "10:00:00 AM", 5, 7, 2014, "Bonus for everyone", "news,change, bonus"
 "bored", "and.hit@smsmt.com", "123", "10:00:00 AM", 5, 7, 2014, "Payrise is 30% this year", "news,change, pay"
