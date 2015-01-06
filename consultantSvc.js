@@ -148,6 +148,23 @@ function getConsultantFromRepo(email, callback) {
   });
 }
 
+function getConsultantsFromRepo(callback) {
+  var query = [
+    'MATCH (n:`Consultant`)',
+    'RETURN n'
+  ].join('\n');
+
+  db.query(query, null, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var consultant = results.map(function (result) {
+      return result.n.data;
+    });
+    callback(consultant);
+  });
+}
+
 exports.getConsultant = function (req, res, next) {
   var email = req.params.email;
   console.log("Consultant: " + email);
@@ -157,7 +174,14 @@ exports.getConsultant = function (req, res, next) {
     next();
   });
 };
-
+/*jslint unparam: true*/
+exports.getConsultants = function (req, res, next) {
+  getConsultantsFromRepo(function (consultants) {
+    res.send(consultants);
+    next();
+  });
+};
+/*jslint unparam: false*/
 exports.getMoods = function (req, res, next) {
   var email = req.params.email;
   console.log("Consultant: " + email);
