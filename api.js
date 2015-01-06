@@ -21,6 +21,7 @@ server.use(restify.CORS());
 server.use(restify.bodyParser());
 server.get('/v1/ping/', ping.getPing);
 
+server.get('/v1/consultant/', consultantSvc.getConsultants);
 server.get('/v1/consultant/:email', consultantSvc.getConsultant);
 server.get('/v1/consultant/:email/clients', consultantSvc.getClientsOfConsultant);
 server.post('/v1/consultant/:email/mood', consultantSvc.postMood);

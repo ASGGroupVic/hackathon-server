@@ -35,15 +35,10 @@ exports.getClientsOfConsultant = function (req, res, next) {
 };
 
 
-function createMoodForConsultant(email, mood, clientCode, callback) {
-  //Example Create
-  //'CREATE (:Consultant {firstName:"Dave", lastName:"Carroll", phone:"0400555666", email:"dave.carr@smsmt.com", employeeId:"007"});'
-  // Example Relationship
-  // 'match (c:Consultant),(e:Engagement)',
-  //'where c.employeeId = "007" AND e.name="Contact Centre Optimisiation"',
-  // 'create (c)-[:engagedOn]->(e);'
+function createMoodForConsultant(email, mood, clientCode, notes, tags, callback) {
   var query = [
-    'MATCH (mo:Mood {name: {consultantMood}}), (cons:Consultant{email: {emailAddress}}), (client:Client{clientCode: {clientCode}})',
+    'MATCH (cons:Consultant{email: {emailAddress}}), (client:Client{clientCode: {clientCode}})',
+    'MERGE (mo:Mood {name: {consultantMood}})',
     'MERGE (day:Day {day: toInt({day}), month: toInt({month}), year:toInt({year})})',
     'MERGE (month:Month {month: toInt({month}), year: toInt({year})})',
     'MERGE (year:Year {year: toInt({year})})',
@@ -51,22 +46,32 @@ function createMoodForConsultant(email, mood, clientCode, callback) {
     'MERGE (day)-[:AT]-(month)',
     'MERGE (month)-[:AT]-(year)',
     'MERGE (year)-[:AT]-(cal)',
-    'CREATE (senti:Sentiment{timeofday:"06:00:00 PM"})-[:AT]->(day)',
+    'CREATE (senti:Sentiment{timeofday:{timeOfDay}})-[:AT]->(day)',
     'CREATE (senti)-[:EMOTION]->(mo)',
     'CREATE (senti)-[:TOWARDS]->(client)',
-    'CREATE (cons)-[:FELT]->(senti);'
+    'CREATE (cons)-[:FELT]->(senti)',
+    'CREATE (obs:Observation{timeofday: {timeOfDay}, text: {observation}})-[:AT]->(day)',
+    'CREATE (cons)-[:MADE]->(obs)',
+    'CREATE (obs)-[:TOWARDS]->(client)',
+    'FOREACH(t in split({tags}, ",") |',
+    'MERGE (newTag:Tag{tag:t})',
+    'CREATE (obs)-[:TAGGED]->(newTag));'
   ].join('\n');
 
   console.log(query);
 
-  var date = new Date();
+  var now = new Date();
+  var now_utc = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
   var params = {
     emailAddress: email,
     consultantMood: mood,
     clientCode: clientCode,
-    day: date.getDate(),
-    month: date.getMonth() + 1,
-    year: date.getFullYear()
+    day: now_utc.getDate(),
+    month: now_utc.getMonth() + 1,
+    year: now_utc.getFullYear(),
+    timeOfDay: now_utc.toLocaleTimeString(),
+    observation: notes,
+    tags: tags
   };
 
   console.log(params);
@@ -75,7 +80,7 @@ function createMoodForConsultant(email, mood, clientCode, callback) {
     if (err) {
       throw err;
     }
-    var clients = results.map(function (result) {
+    results.map(function (result) {
       console.log(result);
       return result;
     });
@@ -137,6 +142,23 @@ function getConsultantFromRepo(email, callback) {
   });
 }
 
+function getConsultantsFromRepo(callback) {
+  var query = [
+    'MATCH (n:`Consultant`)',
+    'RETURN n'
+  ].join('\n');
+
+  db.query(query, null, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    var consultant = results.map(function (result) {
+      return result.n.data;
+    });
+    callback(consultant);
+  });
+}
+
 exports.getConsultant = function (req, res, next) {
   var email = req.params.email;
   console.log("Consultant: " + email);
@@ -146,7 +168,14 @@ exports.getConsultant = function (req, res, next) {
     next();
   });
 };
-
+/*jslint unparam: true*/
+exports.getConsultants = function (req, res, next) {
+  getConsultantsFromRepo(function (consultants) {
+    res.send(consultants);
+    next();
+  });
+};
+/*jslint unparam: false*/
 exports.getMoods = function (req, res, next) {
   var email = req.params.email;
   console.log("Consultant: " + email);
@@ -158,11 +187,12 @@ exports.getMoods = function (req, res, next) {
 };
 
 exports.postMood = function (req, res, next) {
-
   var email = req.params.email;
   var mood = req.body.mood;
   var clientCode = req.body.client;
-  createMoodForConsultant(email, mood, clientCode, function () {
+  var notes = req.body.notes;
+  var tags = req.body.tags;
+  createMoodForConsultant(email, mood, clientCode, notes, tags, function () {
     res.status(200);
     res.json({
       success: true
