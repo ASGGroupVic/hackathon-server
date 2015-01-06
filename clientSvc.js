@@ -136,7 +136,7 @@ exports.getClients = function (req, res, next) {
 function getConsultantforClientsFromRepo(clientCode, callback) {
   var query = [
     'MATCH (co:Consultant)-->(en:Engagement)-->(cl:Client {clientCode:{cCode}})',
-    'RETURN en.name as engagementName, co.phone as phone, co.employeeId as employeeId, co.firstName as firstname, co.lastName as lastName, co.email as email'
+    'RETURN en.name as engagementName, en.completed as completed, co.phone as phone, co.employeeId as employeeId, co.firstName as firstname, co.lastName as lastName, co.email as email'
   ].join('\n');
 
   var params = {
