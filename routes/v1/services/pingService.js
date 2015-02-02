@@ -1,8 +1,7 @@
 'use strict';
 /*jslint unparam: true*/
-function getPing(req, res, next) {
-  res.send('pong - It works!');
-  next();
+function getPing(request, response) {
+  response.json('pong!');
 }
 /*jslint unparam: false*/
 
