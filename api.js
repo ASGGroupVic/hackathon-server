@@ -20,6 +20,7 @@ server.use(restify.CORS());
 
 server.use(restify.bodyParser());
 server.get('/v1/ping/', ping.getPing);
+server.get('/v1/pong/', ping.getPing);
 
 server.get('/v1/consultant/', consultantSvc.getConsultants);
 server.get('/v1/consultant/:email', consultantSvc.getConsultant);
