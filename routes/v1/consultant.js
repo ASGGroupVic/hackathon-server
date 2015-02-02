@@ -2,6 +2,9 @@
 var express = require('express');
 var consultantService = require('./services/consultantService');
 
+var bodyParser = require('body-parser');
+var urlencode = bodyParser.urlencoded({ extended: false });
+
 var router = express.Router();
 
 router.route('/')
@@ -14,12 +17,16 @@ router.route('/:email/clients')
   .get(consultantService.getClientsOfConsultant);
 
 router.route('/:email/mood')
-  .get(consultantService.getMoods);
+  .get(consultantService.getMoods)
+  .post(urlencode, consultantService.addMood);
 
-// server.post('/v1/consultant/:email/mood', consultantSvc.postMood);
-// server.get('/v1/consultant/:email/mood', consultantSvc.getMoods);
-// server.get('/v1/consultant/:email/sentiments', consultantSvc.getSentiments);
-// server.get('/v1/consultant/:email/last5mood', consultantSvc.getLast5Moods);
-// server.get('/v1/consultant/search/:search', consultantSvc.searchClient);
+router.route('/:email/sentiments')
+  .get(consultantService.getSentiments)
 
+router.route('/:email/last5mood')
+  .get(consultantService.getLast5Moods)
+
+router.route('/search/:search')
+  .get(consultantService.searchClient)
+  
 module.exports = router;
