@@ -1,10 +1,9 @@
 #hackathon-server
 
-To install dependant packages:
-- npm install
+To install dependant packages, type `npm install`
 
 To deploy the solution to AWS Elastic Beanstalk via the CLI:
-- Go through the Getting Started guide: http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-getting-set-up.html
+- Go through the [AWS - Getting Set Up with EB Command Line Interface (CLI) 3.x](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-getting-set-up.html)
 - Initialise Elastic Beanstalk CLI:
   - Enter the following command to configure the elastic beanstalk connection
   
