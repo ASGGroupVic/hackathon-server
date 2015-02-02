@@ -18,6 +18,8 @@ To deploy the solution to AWS Elastic Beanstalk via the CLI:
 - You should now be able to deploy the application with the following command:
   
   `eb deploy`
+
+  >Note: It only deploys the last commit, so make sure your changes are committed
 - You can browse directly to the application url in AWS with the command:
 
   `eb open`
