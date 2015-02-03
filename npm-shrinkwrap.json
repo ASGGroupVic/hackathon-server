@@ -70,6 +70,18 @@
         }
       }
     },
+    "cors": {
+      "version": "2.5.3",
+      "from": "cors@*",
+      "resolved": "https://registry.npmjs.org/cors/-/cors-2.5.3.tgz",
+      "dependencies": {
+        "vary": {
+          "version": "1.0.0",
+          "from": "vary@>=1.0.0 <2.0.0",
+          "resolved": "https://registry.npmjs.org/vary/-/vary-1.0.0.tgz"
+        }
+      }
+    },
     "express": {
       "version": "4.11.2",
       "from": "express@",
