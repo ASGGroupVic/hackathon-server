@@ -8,4 +8,7 @@ router.use('/ping', ping);
 var consultant = require('./consultant.js');
 router.use('/consultant', consultant);
 
+var client = require('./client.js');
+router.use('/client', client);
+
 module.exports = router;

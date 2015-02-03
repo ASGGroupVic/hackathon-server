@@ -25,6 +25,7 @@ var consultant = {
     ]
   };
 
+// Ping Route
 describe('When I get /ping', function () {
   it('should return 200 status code', function (done) {
     request(app)
@@ -38,7 +39,9 @@ describe('When I get /ping', function () {
       .expect(/pong/i, done);
   });
 });
+// End of Ping route
 
+// Consultant Route
 describe('When I list /consultant', function () {
   var consultants = ['test.consultant', 'different.consultant'];
 
@@ -279,4 +282,27 @@ describe('When I get the search for a consultant at /v1/consultant/search/:searc
       .expect('Content-Type', /json/, done);
   });
 });
+// End of Consultant route
 
+// Client Route
+describe('When I list /client', function () {
+  var clients = ['test.client', 'different.client'];
+
+  it('should return a 200 status code', function (done) {
+    request(app)
+      .get('/v1/client')
+      .expect(200, done);
+  });
+
+  it('should return json content-type', function (done) {
+    request(app)
+      .get('/v1/client')
+      .expect('Content-Type', /json/, done);
+  });
+  it('should return multiple clients', function (done) {
+    request(app)
+      .get('/v1/client')
+      .expect(JSON.stringify(clients), done);
+  });
+});
+// End of Client Route

@@ -5,7 +5,8 @@
   "description": "Consultant-XRay-API",
   "author": "SMS",
   "scripts": {
-    "test": "NODE_ENV=test mocha test.js --watch"    
+    "test": "NODE_ENV=test mocha test.js --watch",
+    "start": "./bin/www"
   },
   "dependencies": {
     "body-parser": "^1.11.0",
