@@ -2,7 +2,7 @@
 var request = require('supertest');
 var assert = require('assert');
 
-var app = require('./app');
+var app = require('./../app');
 var consultant = {
     name: 'different.consultant',
     email: 'different.consultant@smsmt.com',
@@ -24,37 +24,6 @@ var consultant = {
       }
     ]
   };
-
-// Main route
-describe('When I get /', function () {
-  it('should return a 200 status code', function (done) {
-    request(app)
-      .get('/')
-      .expect(200, done);
-  });
-  it('should return It is quiet here!', function (done) {
-    request(app)
-      .get('/')
-      .expect(/It is quiet here!/, done);
-  });
-});
-// End of Main route
-
-// Ping Route
-describe('When I get /ping', function () {
-  it('should return 200 status code', function (done) {
-    request(app)
-      .get('/v1/ping')
-      .expect(200, done);
-  });
-
-  it('should pong', function (done) {
-    request(app)
-      .get('/v1/ping')
-      .expect(/pong/i, done);
-  });
-});
-// End of Ping route
 
 // Consultant Route
 describe('When I list /consultant', function () {
@@ -298,26 +267,3 @@ describe('When I get the search for a consultant at /v1/consultant/search/:searc
   });
 });
 // End of Consultant route
-
-// Client Route
-describe('When I list /client', function () {
-  var clients = ['test.client', 'different.client'];
-
-  it('should return a 200 status code', function (done) {
-    request(app)
-      .get('/v1/client')
-      .expect(200, done);
-  });
-
-  it('should return json content-type', function (done) {
-    request(app)
-      .get('/v1/client')
-      .expect('Content-Type', /json/, done);
-  });
-  it('should return multiple clients', function (done) {
-    request(app)
-      .get('/v1/client')
-      .expect(JSON.stringify(clients), done);
-  });
-});
-// End of Client Route

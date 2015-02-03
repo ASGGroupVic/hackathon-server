@@ -5,7 +5,7 @@
   "description": "Consultant-XRay-API",
   "author": "SMS",
   "scripts": {
-    "test": "NODE_ENV=test mocha test.js",
+    "test": "NODE_ENV=test mocha tests",
     "test-watch": "NODE_ENV=test mocha test.js --watch",
     "start": "./bin/www",
     "heroku-deploy": "git push heroku master",
