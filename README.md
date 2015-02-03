@@ -1,4 +1,4 @@
-#hackathon-server
+#Consultant X-Ray API
 
 ##Installation
 To install dependant packages, type `npm install`
