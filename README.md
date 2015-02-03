@@ -1,7 +1,14 @@
 #hackathon-server
 
+##Installation
 To install dependant packages, type `npm install`
 
+##Testing
+To test the application, run the command `npm test`
+
+If the test script under packages.json has the --watch flag, it will continue to listen for changes and run the tests when it detects a change.
+
+##Deployment
 To deploy the solution to AWS Elastic Beanstalk via the CLI:
 - Go through the [AWS - Getting Set Up with EB Command Line Interface (CLI) 3.x](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-getting-set-up.html)
 - Initialise Elastic Beanstalk CLI:
