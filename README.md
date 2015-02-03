@@ -4,15 +4,14 @@
 To install dependant packages, type `npm install`
 
 ##Testing
-To test the application, run the command `npm test`
-
-If the test script under packages.json has the --watch flag, it will continue to listen for changes and run the tests when it detects a change.
+To test the application once, run the command `npm test`
+To run the test with a watch so that it will continue to listen for changes and run the tests when it detects a change: run `npm run test-watch`
 
 ##Deployment to Heroku
 - See the [Heroku - Getting Started Guide](https://devcenter.heroku.com/articles/getting-started-with-nodejs#introduction)
 - To deploy the committed code from your master branch, run the following comand:
   
-  `git push heroku master`
+  `npm run heroku-deploy`
 - To view your service in heroku, run the following command:
   
   `heroku open`
