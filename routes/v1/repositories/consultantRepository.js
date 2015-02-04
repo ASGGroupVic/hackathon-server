@@ -1,5 +1,6 @@
-'use strict';
+/*jslint node: true */
 /*global db*/
+'use strict';
 
 function getConsultantClients(email, callback) {
   var query = [

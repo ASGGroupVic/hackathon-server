@@ -1,4 +1,6 @@
+/*jslint node: true */
 'use strict';
+
 var express = require('express');
 var consultantService = require('./services/consultantService');
 
@@ -21,12 +23,12 @@ router.route('/:email/mood')
   .post(urlencode, consultantService.addMood);
 
 router.route('/:email/sentiments')
-  .get(consultantService.getSentiments)
+  .get(consultantService.getSentiments);
 
 router.route('/:email/last5mood')
-  .get(consultantService.getLast5Moods)
+  .get(consultantService.getLast5Moods);
 
 router.route('/search/:search')
-  .get(consultantService.searchClient)
-  
+  .get(consultantService.searchClient);
+
 module.exports = router;

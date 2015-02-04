@@ -1,4 +1,6 @@
+/*jslint node: true */
 'use strict';
+
 /*jslint unparam: true*/
 function getPing(request, response) {
   response.json('pong!');

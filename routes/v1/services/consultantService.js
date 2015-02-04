@@ -1,3 +1,6 @@
+/*jslint node: true */
+'use strict';
+
 var consultants = [
   {
     name: 'test.consultant',
@@ -58,9 +61,9 @@ function getConsultantByEmail(request, response) {
 
   if (!consultant) {
     response.status(404).json("Could not find consultant with email: " + email);
+  } else {
+    response.json(consultant);
   }
-
-  response.json(consultant);
 }
 
 function getClientsOfConsultant(request, response) {
@@ -69,9 +72,9 @@ function getClientsOfConsultant(request, response) {
 
   if (!consultant) {
     response.status(404).json("Could not find consultant with email: " + email);
+  } else {
+    response.json(consultant.clients);
   }
-
-  response.json(consultant.clients);
 }
 
 function getMoods(request, response) {
@@ -80,9 +83,9 @@ function getMoods(request, response) {
 
   if (!consultant) {
     response.status(404).json("Could not find consultant with email: " + email);
+  } else {
+    response.json(consultant.moods);
   }
-
-  response.json(consultant.moods);
 }
 
 function addMood(request, response) {
@@ -100,31 +103,31 @@ function addMood(request, response) {
   response.status(201).json(newMood);
 }
 
-function getSentiments (request, response) {
+function getSentiments(request, response) {
   var email = request.params.email;
   var consultant = getConsultant(email);
 
   if (!consultant) {
     response.status(404).json("Could not find consultant with email: " + email);
+  } else {
+    response.json(email);
   }
-  response.json(email);
-
   //TODO: Get sentiment stuff here
 }
 
-function getLast5Moods (request, response) {
+function getLast5Moods(request, response) {
   var email = request.params.email;
   var consultant = getConsultant(email);
 
   if (!consultant) {
     response.status(404).json("Could not find consultant with email: " + email);
+  } else {
+    response.json(email);
   }
-  response.json(email);
-
   //TODO: Get Last5Moods stuff here
 }
 
-function searchClient (request, response) {
+function searchClient(request, response) {
   var search = request.params.search;
   response.json(search);
 }

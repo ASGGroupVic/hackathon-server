@@ -1,6 +1,6 @@
-'use strict';
+/*jslint node: true */
 /*global db*/
-/*jshint unused:req */
+'use strict';
 
 function getMoodForClient(code, callback) {
   var query = [

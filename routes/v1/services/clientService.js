@@ -1,4 +1,6 @@
+/*jslint node: true */
 'use strict';
+
 /*jslint unparam: true*/
 function getClients(request, response) {
   var clients = ['test.client', 'different.client'];
