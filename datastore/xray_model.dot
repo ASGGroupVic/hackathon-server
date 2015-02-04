@@ -1,0 +1,24 @@
+digraph {
+	Consultant -> Consultant [label="LEAD {Start, End}"]	
+	Consultant -> Engagement [label="ENGAGED"];
+	Engagement -> Project [label="ON"];
+	Engagement -> Site [label="AT"];
+	Project -> Client [label="FOR"];
+	Consultant -> Client [label="MANAGE {Start, End}"]	
+	Client -> Site [label="OPERATE"];
+	Consultant -> Role [label="INTERESTED"]	
+	Engagement -> Role [label="PERFORM"]	
+	Training -> Role [label="APPLIES"]	
+	Consultant -> Sentiment [label="FELT"];
+	Sentiment -> Client [label="TOWARDS"];
+	Sentiment -> Mood [label="EMOTION"];
+	Sentiment -> Tag [label="TAGGED"];
+	Sentiment -> Day [label="AT"];
+	Day -> Month [label="AT"];
+	Month -> Year [label="AT"];
+	Year -> Calendar [label="AT"];	
+	Engagement -> Day [label="START"];
+	Engagement -> Day [label="END"];
+	Project -> Day [label="START"];
+	Project -> Day [label="END"];
+}
