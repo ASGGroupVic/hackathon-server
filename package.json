@@ -4,8 +4,25 @@
   "version": "0.0.1",
   "description": "Consultant-XRay-API",
   "author": "SMS",
+  "engines": {
+    "node": "0.10.x",
+    "npm": "2.4.x"
+  },
+  "scripts": {
+    "test": "NODE_ENV=test mocha tests",
+    "test-watch": "NODE_ENV=test mocha test.js --watch",
+    "start": "./bin/www",
+    "heroku-deploy": "git push heroku master",
+    "heroku-join": "heroku git:remote -a salty-sands-5264"
+  },
   "dependencies": {
-    "neo4j": "^1.1.1",
-    "restify": "^2.8.4"
+    "body-parser": "^1.11.0",
+    "cors": "^2.5.3",
+    "express": "^4.11.2",
+    "neo4j": "^1.1.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.1.0",
+    "supertest": "^0.15.0"
   }
 }
